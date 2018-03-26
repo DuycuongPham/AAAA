@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/selected"
+    android:oneshot="false">
+    <item
+        android:drawable="@drawable/download0"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download1"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download2"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download3"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download4"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download5"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download6"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download7"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download8"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download9"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download10"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download11"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download12"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download13"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download14"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download15"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download16"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download17"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download18"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download19"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download20"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download21"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download22"
+        android:duration="50" />
+    <item
+        android:drawable="@drawable/download23"
+        android:duration="50" />
+</animation-list>

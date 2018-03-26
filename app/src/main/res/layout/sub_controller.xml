@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relative_sub_controller"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
+    android:background="@drawable/rect"
+    android:elevation="@dimen/shadow_medium"
+    android:gravity="center"
+    android:translationZ="@dimen/shadow_medium"
+    android:visibility="visible">
+
+    <ProgressBar
+        android:id="@+id/progress_main"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progress_bar_main_height"
+        android:layout_marginLeft="@dimen/controller_padding_bottom"
+        android:layout_marginRight="@dimen/controller_padding_bottom"
+        android:indeterminate="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sub_controller_height"
+        android:layout_below="@id/progress_main"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/image_track_detail"
+            android:layout_width="@dimen/sub_controller_height"
+            android:layout_height="@dimen/sub_controller_height"
+            android:padding="@dimen/controller_padding_bottom"
+            android:src="@drawable/ic_music" />
+
+        <Button
+            android:id="@+id/button_next_sub"
+            android:layout_width="@dimen/sub_controller_button_height_small"
+            android:layout_height="@dimen/sub_controller_button_height_small"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_skip_next" />
+
+        <Button
+            android:id="@+id/button_play_sub"
+            android:layout_width="@dimen/sub_controller_button_height"
+            android:layout_height="@dimen/sub_controller_button_height"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/button_next_sub"
+            android:background="@drawable/ic_play_arrow" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/button_play_sub"
+            android:layout_toRightOf="@id/image_track_detail"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/text_track_name_sub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/sub_text_title_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_track_artist_sub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_track_name_sub"
+                android:maxLines="1" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
