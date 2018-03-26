@@ -1,0 +1,34 @@
+<resources>
+    <string name="title_app_name">SoundCloud</string>
+    <string name="msg_loading">Loading</string>
+    <string name="msg_default_progress">0:00</string>
+    <string name="title_playlist">Playlist</string>
+    <string name="title_playing">Playing</string>
+    <string name="title_detail">Detail</string>
+    <string name="title_title">Title:</string>
+    <string name="title_description">Description:</string>
+    <string name="title_id">ID:</string>
+    <string name="title_created_at">Created at:</string>
+    <string name="title_tag_list">Tag list:</string>
+    <string name="title_genre">Genre:</string>
+    <string name="title_user">User:</string>
+    <string name="title_download">Download</string>
+    <string name="title_delete">Delete</string>
+    <string name="title_play">Play</string>
+    <string name="title_add_to_playlist">Add To Playlist</string>
+    <string name="title_playlists">Playlists</string>
+    <string name="title_downloading">Downloading</string>
+    <string name="title_downloaded">Downloaded</string>
+    <string name="msg_play_list_name">New Playlist\'s Name</string>
+    <string name="title_create">Create</string>
+    <string name="title_cancel">Cancel</string>
+    <string name="mgs_empty_name">Name must not empty!</string>
+    <string name="msg_saved">Saved</string>
+    <string name="msg_saved_fail">Saving fail</string>
+    <string name="title_search">Search</string>
+    <string name="action_phone_state">android.intent.action.PHONE_STATE</string>
+    <string name="extra_state">state</string>
+    <string name="action_offhook">OFFHOOK</string>
+    <string name="action_idle">IDLE</string>
+    <string name="action_ringing">RINGING</string>
+</resources>
