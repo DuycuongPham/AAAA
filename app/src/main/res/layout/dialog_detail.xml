@@ -130,7 +130,7 @@
         app:layout_constraintTop_toBottomOf="@+id/image_delete" />
 
     <TextView
-        android:id="@+id/text_playlist_delete"
+        android:id="@+id/text_add_playlist"
         style="@style/DownloadText"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/download_item_image_height"
@@ -142,26 +142,31 @@
         app:layout_constraintStart_toEndOf="@+id/image_playlist"
         app:layout_constraintTop_toBottomOf="@+id/text_delete" />
 
+    <TextView
+        android:id="@+id/text_create_playlist"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        style="@style/DownloadText"
+        android:text="@string/title_create_playlist"
+        android:textColor="@color/color_black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_add_playlist"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_playlist"
+        android:visibility="gone"
         android:layout_width="@dimen/recycler_detail_height"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_60"
         android:layout_marginStart="@dimen/dp_60"
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_create_playlist" />
-
-    <ImageView
-        android:id="@+id/image_create_playlist"
-        android:layout_width="@dimen/download_item_image_height"
-        android:layout_height="@dimen/download_item_image_height"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:src="@drawable/ic_add_circle"
-        app:layout_constraintStart_toEndOf="@+id/text_playlist_delete"
-        app:layout_constraintTop_toBottomOf="@+id/text_delete" />
+        app:layout_constraintTop_toBottomOf="@+id/text_add_playlist"
+        app:layout_constraintBottom_toTopOf="@id/text_create_playlist"/>
 
 </android.support.constraint.ConstraintLayout>

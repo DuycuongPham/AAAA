@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.framgia.tungvd.soundcloud">
+    package="com.pham.duycuong.soundcloud">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -16,35 +16,42 @@
         android:theme="@style/AppTheme">
         <activity android:name=".screen.main.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <service android:name=".data.model.MusicService" />
+        <service android:name=".data.model.MusicService"/>
 
         <activity
             android:name=".screen.category.CategoryActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"/>
         <activity
             android:name=".screen.play.PlayActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"/>
         <activity
             android:name=".screen.download.DownloadActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"/>
         <activity
             android:name=".screen.playlist.PlaylistActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"/>
         <activity
             android:name=".screen.search.SearchActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"/>
 
         <receiver android:name=".screen.MyBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.PHONE_STATE"/>
             </intent-filter>
         </receiver>
+
+        <activity android:name=".screen.playlistdetail.PlayListDetailActivity">
+        </activity>
+        <activity android:name=".screen.playlist.ChooseSongActivity">
+        </activity>
+        <activity android:name=".screen.songlist.SongListActivity">
+        </activity>
     </application>
 
 </manifest>

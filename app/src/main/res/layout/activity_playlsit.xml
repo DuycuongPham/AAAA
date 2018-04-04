@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/relative_sub_controller"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_10"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="@color/color_pink"
+        android:onClick="onClickFloatButton"
+        />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,15 +40,17 @@
         </android.support.constraint.ConstraintLayout>
 
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/relative_sub_controller"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_80"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <include layout="@layout/sub_controller" />
-
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+        <include layout="@layout/sub_controller"/>
     </RelativeLayout>
+
 
 
 </android.support.constraint.ConstraintLayout>

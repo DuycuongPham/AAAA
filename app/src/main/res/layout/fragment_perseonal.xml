@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.pham.duycuong.soundcloud.screen.personal.PersonalFragment"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:text="@string/title_online"
+        android:textSize="20sp"
+        />
+
+    <Button
+        android:id="@+id/btnDownload"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="left|center_vertical"
+        android:background="@drawable/button"
+        android:text="@string/title_download"
+        />
+    <Button
+        android:id="@+id/btnPlayList"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="left|center_vertical"
+        android:text="@string/title_playlists"
+        />
+
+    <Button
+        android:id="@+id/btnSongList"
+        android:layout_width="match_parent"
+        android:text="Song list"
+        android:layout_height="50dp"
+        android:gravity="left|center_vertical"
+        />
+
+</LinearLayout>

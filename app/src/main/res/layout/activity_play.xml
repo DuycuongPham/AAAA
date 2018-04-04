@@ -36,7 +36,7 @@
             android:id="@+id/seek_bar_main"
             style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/seekbar_main_height" />
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -76,7 +76,8 @@
                 android:layout_marginBottom="@dimen/controller_padding_bottom"
                 android:layout_marginEnd="@dimen/button_margin"
                 android:layout_marginRight="@dimen/button_margin"
-                android:background="@drawable/ic_shuffle_on" />
+                android:background="@drawable/ic_shuffle_on"
+                android:enabled="false"/>
 
             <Button
                 android:id="@+id/button_previous"
@@ -110,7 +111,8 @@
                 android:layout_marginBottom="@dimen/controller_padding_bottom"
                 android:layout_marginLeft="@dimen/button_margin"
                 android:layout_marginStart="@dimen/button_margin"
-                android:background="@drawable/ic_repeat_one" />
+                android:background="@drawable/ic_repeat_one"
+                android:enabled="false"/>
 
         </LinearLayout>
     </LinearLayout>
