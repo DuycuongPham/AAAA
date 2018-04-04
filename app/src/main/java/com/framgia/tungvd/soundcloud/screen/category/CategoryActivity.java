@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.view.View;
+import android.widget.ProgressBar;
 import com.framgia.tungvd.soundcloud.R;
 import com.framgia.tungvd.soundcloud.custom.adapter.TrackClickListener;
 import com.framgia.tungvd.soundcloud.custom.adapter.TrackAdapter;
@@ -28,7 +30,7 @@ public class CategoryActivity extends BaseActivity
     public static final String EXTRA_CATEGORY =
             "com.framgia.tungvd.soundcloud.screen.category.extras.EXTRA_CATEGORY";
 
-    private ProgressDialog mProgressDialog;
+    private ProgressBar mProgressBar;
     private CategoryPresenter mPresenter;
     private RecyclerView mRecyclerViewItems;
     private TrackAdapter mTrackAdapter;
@@ -48,12 +50,7 @@ public class CategoryActivity extends BaseActivity
         initBaseView();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mMusicService = MusicService.getInstance();
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setMessage(
-                new StringBuilder(getString(R.string.msg_loading))
-                        .append(" ")
-                        .append(mCategory.getName())
-                        .toString());
+        mProgressBar = findViewById(R.id.progressBar);
         mRecyclerViewItems = findViewById(R.id.recycler_view_items);
 
         mTrackAdapter = new TrackAdapter();
@@ -85,10 +82,10 @@ public class CategoryActivity extends BaseActivity
     @Override
     public void changeLoadingIndicatorState(Boolean isLoading) {
         if (isLoading) {
-            mProgressDialog.show();
+            mProgressBar.setVisibility(View.VISIBLE);
             return;
         }
-        mProgressDialog.dismiss();
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

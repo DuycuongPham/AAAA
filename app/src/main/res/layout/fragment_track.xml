@@ -26,7 +26,8 @@
         android:layout_marginStart="@dimen/dp_24"
         android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:enabled="false"/>
 
     <ImageView
         android:id="@+id/image_add_playlist"
@@ -37,6 +38,7 @@
         android:layout_marginRight="@dimen/dp_24"
         android:src="@drawable/ic_playlist_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:enabled="false"/>
 
 </android.support.constraint.ConstraintLayout>

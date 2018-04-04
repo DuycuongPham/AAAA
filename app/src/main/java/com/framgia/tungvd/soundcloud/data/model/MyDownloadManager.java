@@ -105,8 +105,8 @@ public class MyDownloadManager implements DownloadObservable {
                 .toString();
 
         Uri uri = Uri.parse(track.getDownloadUrl());
-        File file = mContext.getFilesDir();
-        file.mkdir();
+        File file = mContext.getFilesDir();//Returns the absolute path to the directory on the filesystem where files created
+        file.mkdir();//Creates the directory named by this abstract pathname, including any necessary but nonexistent parent directories.
         DownloadManager downloadManager = (DownloadManager)
                 mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         long id = downloadManager.enqueue(new DownloadManager.Request(uri)

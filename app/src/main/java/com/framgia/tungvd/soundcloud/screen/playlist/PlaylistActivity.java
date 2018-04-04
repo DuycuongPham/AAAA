@@ -1,10 +1,12 @@
 package com.framgia.tungvd.soundcloud.screen.playlist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,6 +25,7 @@ import com.framgia.tungvd.soundcloud.data.source.local.MyDBHelper;
 import com.framgia.tungvd.soundcloud.data.source.local.PlaylistLocalDataSource;
 import com.framgia.tungvd.soundcloud.data.source.remote.PlaylistRemoteDataSource;
 import com.framgia.tungvd.soundcloud.screen.BaseActivity;
+import com.framgia.tungvd.soundcloud.screen.playlistdetail.PlayListDetailActivity;
 import com.framgia.tungvd.soundcloud.util.AppExecutors;
 
 import java.util.List;
@@ -56,12 +59,15 @@ public class PlaylistActivity extends BaseActivity
         mRecyclerPlaylist.addItemDecoration(decoration);
         mRecyclerPlaylist.setLayoutManager(layoutManager);
         mRecyclerPlaylist.setAdapter(mPlaylistAdapter);
+
         mPresenter = new PlaylistPresenter();
         mPresenter.setView(this);
         mPresenter.onStart();
         initMusicService();
         updateView();
     }
+
+
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -126,10 +132,11 @@ public class PlaylistActivity extends BaseActivity
 
     @Override
     public void onItemClicked(int position) {
-        PlaylistDetailBottomSheet fragment = PlaylistDetailBottomSheet
-                .newInstance(mPlaylistAdapter.getPlaylists().get(position));
-        fragment.setListener(this);
-        fragment.show(getSupportFragmentManager(), fragment.getTag());
+//        PlaylistDetailBottomSheet fragment = PlaylistDetailBottomSheet
+//                .newInstance(mPlaylistAdapter.getPlaylists().get(position));
+//        fragment.setListener(this);
+//        fragment.show(getSupportFragmentManager(), fragment.getTag());
+        startActivity(new Intent(this, PlayListDetailActivity.class));
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,7 +80,40 @@ public class PlaylistDetailBottomSheet extends BottomSheetDialogFragment
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerTracks.setLayoutManager(layoutManager);
         mRecyclerTracks.setAdapter(mTrackAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
+        itemTouchHelper.attachToRecyclerView(mRecyclerTracks);
+
         updateView();
+    }
+
+    private ItemTouchHelper.Callback createHelperCallback() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                            RecyclerView.ViewHolder target) {
+                        moveTrack(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                        deleteTrack(viewHolder.getAdapterPosition());
+                    }
+                };
+        return simpleItemTouchCallback;
+    }
+
+    private void moveTrack(int oldPos, int newPos) {
+        mTrackAdapter.moveTrack(oldPos, newPos);
+        mTrackAdapter.notifyItemMoved(oldPos, newPos);
+    }
+
+    private void deleteTrack(final int pos) {
+        mTrackAdapter.deleteTrack(pos);
+        mTrackAdapter.notifyItemRemoved(pos);
     }
 
     private void updateView() {

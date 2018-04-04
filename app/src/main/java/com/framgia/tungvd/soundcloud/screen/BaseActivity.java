@@ -34,6 +34,7 @@ public abstract class BaseActivity extends AppCompatActivity
     protected TextView mTextViewTrackArtist;
     private Button mButtonPlay;
     private Button mButtonNext;
+    private Button mButtonPrevious;
     private ImageView mImageTrackSub;
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -52,6 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity
     protected void initBaseView() {
         mButtonPlay = findViewById(R.id.button_play_sub);
         mButtonNext = findViewById(R.id.button_next_sub);
+        mButtonPrevious=findViewById(R.id.button_previous_sub);
         mTextViewTrackName = findViewById(R.id.text_track_name_sub);
         mProgressBarMain = findViewById(R.id.progress_main);
         mTextViewTrackArtist = findViewById(R.id.text_track_artist_sub);
@@ -60,6 +62,7 @@ public abstract class BaseActivity extends AppCompatActivity
         mRelativeSubController.setOnClickListener(this);
         mButtonPlay.setOnClickListener(this);
         mButtonNext.setOnClickListener(this);
+        mButtonPrevious.setOnClickListener(this);
     }
 
     protected void onMusicServiceConnected() {
@@ -95,6 +98,10 @@ public abstract class BaseActivity extends AppCompatActivity
                 break;
             case R.id.button_next_sub:
                 mMusicService.handleNext();
+                break;
+
+            case R.id.button_previous_sub:
+                mMusicService.handlePrevious();
                 break;
             default:
                 break;

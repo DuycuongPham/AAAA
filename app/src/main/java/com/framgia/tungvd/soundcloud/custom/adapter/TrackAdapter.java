@@ -61,6 +61,16 @@ public class TrackAdapter
         notifyDataSetChanged();
     }
 
+    public void moveTrack(int oldPos, int newPos){
+        Track item=mTracks.get(oldPos);
+        mTracks.remove(oldPos);
+        mTracks.add(newPos, item);
+    }
+
+    public void deleteTrack(int pos){
+        mTracks.remove(pos);
+    }
+
     @Override
     public TrackAdapter.TrackViewHolder onCreateViewHolder(ViewGroup parent,
                                                            int viewType) {

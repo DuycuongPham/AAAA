@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface MainContract {
     interface View extends MusicServiceObserver{
-        void showCategories(List<Category> categories);
-        void showImageCategory(int position, String imageUrl);
+//        void showCategories(List<Category> categories);
+//        void showImageCategory(int position, String imageUrl);
     }
 
     interface Presenter extends BasePresenter<View> {
-        void getCategories();
-        void getCategoriesImage();
+//        void getCategories();
+//        void getCategoriesImage();
     }
 }

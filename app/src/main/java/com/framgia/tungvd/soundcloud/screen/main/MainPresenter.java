@@ -20,20 +20,9 @@ import java.util.Random;
 
 public class MainPresenter implements MainContract.Presenter {
 
-    private static final int PAGE_DEFAULT = 1;
-    private static final int TRACK_LIMIT = 3;
 
     private MainContract.View mView;
-    private CategoriesRepository mCategoriesRepository;
-    private TracksRepository mTracksRepository;
-    private Random mRandom;
-    private List<Category> mCategories;
 
-    public MainPresenter(TracksRepository repository) {
-        mCategoriesRepository = CategoriesRepository.getInstance();
-        mTracksRepository = repository;
-        mRandom = new Random();
-    }
 
     @Override
     public void setView(MainContract.View view) {
@@ -42,7 +31,7 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void onStart() {
-        getCategories();
+
     }
 
     @Override
@@ -50,48 +39,5 @@ public class MainPresenter implements MainContract.Presenter {
 
     }
 
-    @Override
-    public void getCategories() {
-        mCategoriesRepository.getCategories(new CategoriesDataSource.LoadCategoriesCallback() {
-            @Override
-            public void onCategoriesLoaded(List<Category> categories) {
-                mView.showCategories(categories);
-                mCategories = categories;
-                getCategoriesImage();
-            }
 
-            @Override
-            public void onDataNotAvailable() {
-
-            }
-        });
-    }
-
-    @Override
-    public void getCategoriesImage() {
-        if (mCategories == null) {
-            return;
-        }
-        for (int i = 0; i < mCategories.size(); i++) {
-            final int finalIndex = i;
-            mTracksRepository.getTracksByGenre(mCategories.get(finalIndex).getGenre(),
-                    PAGE_DEFAULT, new TracksDataSource.LoadTracksCallback() {
-                        @Override
-                        public void onTracksLoaded(List<Track> tracks) {
-                            int indexRandom = mRandom.nextInt(tracks.size());
-                            String imageUrl = tracks.get(indexRandom).getArtworkUrl();
-                            if (imageUrl == null || imageUrl.isEmpty() ||
-                                    imageUrl.equals(Constant.SoundCloud.NULL_VALUE)) {
-                                return;
-                            }
-                            mView.showImageCategory(finalIndex, imageUrl);
-                        }
-
-                        @Override
-                        public void onDataNotAvailable() {
-
-                        }
-                    });
-        }
-    }
 }

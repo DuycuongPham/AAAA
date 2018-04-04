@@ -153,12 +153,6 @@ public class PlayActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.item_download:
-                startActivity(new Intent(this, DownloadActivity.class));
-                break;
-            case R.id.item_play_list:
-                startActivity(new Intent(this, PlaylistActivity.class));
-                break;
             case R.id.item_search_main:
                 startActivity(new Intent(this, SearchActivity.class));
                 break;

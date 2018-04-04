@@ -6,6 +6,7 @@
     android:background="@color/color_white"
     android:gravity="center"
     android:orientation="horizontal"
+    android:visibility="invisible"
     android:weightSum="1">
 
     <ImageView
