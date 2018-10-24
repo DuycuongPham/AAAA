@@ -26,7 +26,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/controller_padding_bottom"
             android:layout_marginRight="@dimen/controller_padding_bottom"
-            android:background="@drawable/ic_more_vert_black" />
+            android:background="@drawable/ic_three_dot" />
 
         <RelativeLayout
             android:id="@+id/relative_track_item"
@@ -48,7 +48,7 @@
                 android:maxLines="1"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/sub_text_title_size"
-                android:textStyle="bold" />
+                />
 
             <TextView
                 android:id="@+id/text_item_artist"

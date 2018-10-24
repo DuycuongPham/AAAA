@@ -1,16 +1,18 @@
 package com.pham.duycuong.soundcloud.screen.playlistdetail;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Html;
+import android.view.View;
+import android.widget.TextView;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackAdapter;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackClickListener;
@@ -24,7 +26,9 @@ import com.pham.duycuong.soundcloud.data.source.local.TracksLocalDataSource;
 import com.pham.duycuong.soundcloud.data.source.remote.PlaylistRemoteDataSource;
 import com.pham.duycuong.soundcloud.data.source.remote.TracksRemoteDataSource;
 import com.pham.duycuong.soundcloud.screen.BaseActivity;
+import com.pham.duycuong.soundcloud.screen.choose_track.ChooseTrackActivity;
 import com.pham.duycuong.soundcloud.util.AppExecutors;
+import com.pham.duycuong.soundcloud.util.Constant;
 import java.util.List;
 
 public class PlayListDetailActivity extends BaseActivity implements PlayListDetailConstract.View,
@@ -33,11 +37,12 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
     private static final String ARGUMENT_PLAYLIST = "ARGUMENT_PLAYLIST";
 
 
-    PlayListDetailConstract.Presenter mPresenter;
-    TrackAdapter mTrackAdapter;
-    Handler mHandler;
+    private PlayListDetailConstract.Presenter mPresenter;
+    private TrackAdapter mTrackAdapter;
+    private Handler mHandler;
     private ActionBar mActionBar;
     private Playlist mPlaylist;
+    private TextView mTextView;
 
     public static void newInstance(Activity activity, Playlist playlist){
         Bundle bundle = new Bundle();
@@ -55,21 +60,24 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
 
         mPlaylist = getIntent().getExtras().getParcelable(PlayListDetailActivity.ARGUMENT_PLAYLIST);
 
-//        Toolbar myToolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(myToolbar);
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setTitle(Html.fromHtml(
+                "<font color='#000000'>" + mPlaylist.getName() + " </font>"));
+
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_left);
+        upArrow.setColorFilter(getResources().getColor(R.color.color_black), PorterDuff.Mode.SRC_ATOP);
+        mActionBar.setHomeAsUpIndicator(upArrow);
+
+        mTextView = findViewById(R.id.textView);
+
+        mHandler = new Handler();
 
         TracksRepository mTracksRepository = TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
         TracksLocalDataSource.getInstance(new AppExecutors(),
                 MyDBHelper.getInstance(this)));
 
-        PlaylistRepository mPlaylistRepository = PlaylistRepository.getInstance(
-                PlaylistLocalDataSource.getInstance(new AppExecutors(),
-                        MyDBHelper.getInstance(this)),
-                PlaylistRemoteDataSource.getInstance());
-
-        PlayListDetailConstract.Presenter mPresenter = new PlayListDetailPresenter(this, mTracksRepository);
+        mPresenter = new PlayListDetailPresenter(this, mTracksRepository);
         RecyclerView recyclerView=findViewById(R.id.recyclerView);
         mTrackAdapter = new TrackAdapter(false, true);
         mTrackAdapter.setItemClickListener(this);
@@ -78,7 +86,6 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
         recyclerView.setAdapter(mTrackAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
         itemTouchHelper.attachToRecyclerView(recyclerView);
-        mPresenter.getTracks(mPlaylist);
         initBaseView();
         initMusicService();
     }
@@ -116,7 +123,7 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
     @Override
     public void onItemClicked(int position) {
         if (mMusicService != null) {
-            mMusicService.handleNewTrack(mTrackAdapter.getTracks(), position, false);
+            mMusicService.handleNewTrack(mTrackAdapter.getTrackList(), position, false);
         }
     }
 
@@ -125,9 +132,24 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
     }
 
     @Override
-    public void showTracks(List<Track> tracks) {
-        mTrackAdapter.setTracks(tracks);
-        mActionBar.setTitle(mPlaylist.getName() + " - "+ tracks.size()+" "+getString(R.string.title_song));
+    public void showTracks(final List<Track> tracks) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(tracks!=null){
+                    mTextView.setVisibility(View.INVISIBLE);
+                    mTrackAdapter.setTrackList(tracks);
+                    mActionBar.setSubtitle(Html.fromHtml(
+                            "<font color='#000000'>" + tracks.size() + " " + getString(R.string.title_song)+ " </font>"));
+                }
+                else{
+                    mTextView.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+        mHandler.post(runnable);
+
+
     }
 
     @Override
@@ -139,10 +161,12 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
     @Override
     protected void onResume() {
         super.onResume();
-        if (mMusicService == null) {
-            return;
-        }
-        mMusicService.register(mTrackAdapter);
+        mPresenter.getTracks(mPlaylist);
+
+//        if (mMusicService != null) {
+//            mMusicService.register(mTrackAdapter);
+//        }
+
     }
 
     @Override
@@ -158,5 +182,13 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return super.onSupportNavigateUp();
+    }
+
+    public void onClickFloatButton(View view){
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constant.PLAY_LIST, mPlaylist);
+        Intent intent = new Intent(this, ChooseTrackActivity.class);
+        intent.putExtra(Constant.BUNDLE, bundle);
+        startActivity(intent);
     }
 }

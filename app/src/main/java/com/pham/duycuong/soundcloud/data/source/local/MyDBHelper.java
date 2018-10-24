@@ -32,7 +32,7 @@ public class MyDBHelper extends SQLiteOpenHelper implements PlaylistDao, TracksD
     private static final int FALSE_VALUE = 0;
     private static final String SQL_CREATE_TRACK_ENTRIES =
             "CREATE TABLE " + Constant.TrackEntry.TABLE_NAME + " (" +
-                    Constant.TrackEntry.COLUMN_ID + " INTEGER PRIMARY KEY," +
+                    Constant.TrackEntry.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     Constant.TrackEntry.COLUMN_KIND + " TEXT," +
                     Constant.TrackEntry.COLUMN_CREATED_AT + " TEXT," +
                     Constant.TrackEntry.COLUMN_DURATION + " INTEGER," +
@@ -147,7 +147,7 @@ public class MyDBHelper extends SQLiteOpenHelper implements PlaylistDao, TracksD
     @Override
     public void insertTrack(Track track) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Constant.TrackEntry.COLUMN_ID, track.getId());
+//        contentValues.put(Constant.TrackEntry.COLUMN_ID, track.getId());
         contentValues.put(Constant.TrackEntry.COLUMN_KIND, track.getKind());
         contentValues.put(Constant.TrackEntry.COLUMN_CREATED_AT, track.getCreateAt());
         contentValues.put(Constant.TrackEntry.COLUMN_DURATION, track.getDuration());
@@ -229,9 +229,10 @@ public class MyDBHelper extends SQLiteOpenHelper implements PlaylistDao, TracksD
         ContentValues values = new ContentValues();
         values.put(Constant.PlaylistEntry.COLUMN_ID, playlist.getId());
         values.put(Constant.PlaylistEntry.COLUMN_NAME, playlist.getName());
-        getWritableDatabase().update(Constant.PlaylistEntry.TABLE_NAME, values,
-                new StringBuilder(String.valueOf(playlist.getId())).append(EQUAL_Q).toString(),
+        long result = getWritableDatabase().update(Constant.PlaylistEntry.TABLE_NAME, values,
+                new StringBuilder(Constant.PlaylistEntry.COLUMN_ID).append(EQUAL_Q).toString(),
                 new String[]{String.valueOf(playlist.getId())});
+        int i=0;
     }
 
     @Override

@@ -132,8 +132,7 @@ public class DetailBottomSheetFragment extends BottomSheetDialogFragment
         super.onViewCreated(view, savedInstanceState);
         mPlaylistRepository = PlaylistRepository.getInstance(
                 PlaylistLocalDataSource.getInstance(new AppExecutors(),
-                        MyDBHelper.getInstance(getContext())),
-                PlaylistRemoteDataSource.getInstance());
+                        MyDBHelper.getInstance(getContext())));
         initView(view);
         mMyDownloadManager = MyDownloadManager.getInstance(getContext());
         mMyDownloadManager.register(this);
@@ -148,9 +147,8 @@ public class DetailBottomSheetFragment extends BottomSheetDialogFragment
         mTextViewAddToPlaylist.setOnClickListener(this);
         mHandler = new Handler();
         updateState();
-       // mImageCreatePlayList.setOnClickListener(this);
-
         mPlaylistAdapter = new PlaylistAdapter(this);
+        mPlaylistAdapter.setActionClick(false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         RecyclerView.ItemDecoration itemDecoration =
                 new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
@@ -322,38 +320,6 @@ public class DetailBottomSheetFragment extends BottomSheetDialogFragment
         }
     }
 
-    private void showCreatePlaylist() {
-        new CreatePlaylistDialog(getContext(), mPlaylistRepository,
-                new PlaylistDataSource.PlaylistCallback() {
-                    @Override
-                    public void onSuccess() {
-                        Runnable runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getContext(),
-                                        getContext().getResources().getText(R.string.msg_saved),
-                                        Toast.LENGTH_SHORT).show();
-                                updatePlayList();
-                            }
-                        };
-                        mHandler.post(runnable);
-                    }
-
-                    @Override
-                    public void onFail() {
-                        Runnable runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getContext(), getContext().getResources()
-                                        .getText(R.string.msg_saved_fail), Toast.LENGTH_SHORT)
-                                        .show();
-                            }
-                        };
-                        mHandler.post(runnable);
-                    }
-                }).show();
-    }
-
     @Override
     public void onItemClicked(int position) {
         mPlaylistRepository.addTrackToPlaylist(mTrack,
@@ -374,21 +340,15 @@ public class DetailBottomSheetFragment extends BottomSheetDialogFragment
 
                     @Override
                     public void onFail() {
-//                        Runnable runnable = new Runnable() {
-//                            @Override
-//                            public void run() {
                                 Toast.makeText(getContext(), getContext().getResources()
                                         .getText(R.string.msg_saved_fail), Toast.LENGTH_SHORT)
                                         .show();
-//                            }
-//                        };
-//                        mHandler.post(runnable);
                     }
                 });
     }
 
     @Override
-    public void onItemDeleteClicked(int position) {
-        //no need to implement
+    public void onActionClicked(int position) {
+
     }
 }

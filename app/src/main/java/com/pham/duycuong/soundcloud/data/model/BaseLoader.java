@@ -36,7 +36,6 @@ public abstract class BaseLoader<Result>  extends AsyncTaskLoader<Result> {
 
     @Override
     public void onStartLoading(){
-//        mCallback.onStartLoading();
         if(mResult!=null){
             deliverResult(mResult);
         }

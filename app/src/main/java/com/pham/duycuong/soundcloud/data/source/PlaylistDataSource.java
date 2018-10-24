@@ -31,4 +31,6 @@ public interface PlaylistDataSource {
 
     void removeTrackFromPlaylist(@NonNull Track track, @NonNull Playlist playlist,
                                  @NonNull PlaylistCallback callback);
+
+    void updatePlaylist(@NonNull Playlist playlist, @NonNull PlaylistCallback callback);
 }

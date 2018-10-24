@@ -68,7 +68,7 @@ public class RecentPlaylistFragment extends BaseFragment
 
     @Override
     public void updateTracks(ArrayList<Track> tracks) {
-        mAdapterRecentPlay.setTracks(tracks);
+        mAdapterRecentPlay.setTrackList(tracks);
     }
 
     @Override

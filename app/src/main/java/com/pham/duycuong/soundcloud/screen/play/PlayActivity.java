@@ -3,13 +3,17 @@ package com.pham.duycuong.soundcloud.screen.play;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -51,12 +55,14 @@ public class PlayActivity extends AppCompatActivity
     private TextView mTextViewDuration;
     private SeekBar mSeekBarMain;
     private ViewPager mViewPager;
+    private ActionBar mActionBar;
 
     private PlayContract.Presenter mPresenter;
     private MusicService mMusicService;
     private RecentPlaylistFragment mRecentPlaylistFragment;
     private RecentDetailFragment mRecentDetailFragment;
     private RecentTrackFragment mRecentTrackFragment;
+
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -70,8 +76,25 @@ public class PlayActivity extends AppCompatActivity
         }
     };
 
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_play);
+        initPlayingView();
+        initMusicService();
+        mPresenter = new PlayPresenter();
+        mPresenter.setView(this);
+        mPresenter.onStart();
+    }
+
     private void initPlayingView() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mActionBar = getSupportActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_left);
+        upArrow.setColorFilter(getResources().getColor(R.color.color_black), PorterDuff.Mode.SRC_ATOP);
+        mActionBar.setHomeAsUpIndicator(upArrow);
+
         mButtonPlay = findViewById(R.id.button_play);
         mButtonNext = findViewById(R.id.button_next);
         mButtonPrevious = findViewById(R.id.button_previous);
@@ -87,9 +110,11 @@ public class PlayActivity extends AppCompatActivity
         mButtonPrevious.setOnClickListener(this);
         mButtonNext.setOnClickListener(this);
         mButtonShuffle.setOnClickListener(this);
+
         mRecentPlaylistFragment = new RecentPlaylistFragment();
         mRecentDetailFragment = new RecentDetailFragment();
         mRecentTrackFragment = new RecentTrackFragment();
+
         ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(mRecentPlaylistFragment);
         fragments.add(mRecentTrackFragment);
@@ -130,17 +155,6 @@ public class PlayActivity extends AppCompatActivity
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, mServiceConnection, BIND_AUTO_CREATE);
         startService(intent);
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play);
-        initPlayingView();
-        initMusicService();
-        mPresenter = new PlayPresenter();
-        mPresenter.setView(this);
-        mPresenter.onStart();
     }
 
     @Override
@@ -235,7 +249,8 @@ public class PlayActivity extends AppCompatActivity
         if (track == null) {
             return;
         }
-        setTitle(track.getTitle());
+        mActionBar.setTitle(Html.fromHtml(
+                "<font color='#000000'>" + track.getTitle() + " </font>"));
     }
 
     @Override

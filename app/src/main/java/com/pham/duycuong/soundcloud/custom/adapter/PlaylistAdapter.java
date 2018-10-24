@@ -18,18 +18,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
 
     private PlaylistClickListener mListener;
     private List<Playlist> mPlaylists;
-    private boolean editable;
+    private boolean mActionClick = true;
 
     public PlaylistAdapter(@NonNull PlaylistClickListener listener) {
         mListener = listener;
         mPlaylists = new ArrayList<>();
-    }
-
-    public PlaylistAdapter(@NonNull PlaylistClickListener listener,
-                           boolean editable) {
-        mListener = listener;
-        mPlaylists = new ArrayList<>();
-        this.editable = editable;
     }
 
     public void setPlaylists(List<Playlist> playlists) {
@@ -44,7 +37,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     @NonNull
     @Override
     public PlaylistHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_playlist, parent, false);
         return new PlaylistHolder(view);
     }
 
@@ -58,43 +51,41 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
         return mPlaylists == null ? 0 : mPlaylists.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (editable) {
-            return R.layout.item_playlist_editable;
-        }
-        return R.layout.item_playlist;
-    }
-
     class PlaylistHolder extends RecyclerView.ViewHolder {
 
         private TextView mTextName;
-        private ImageView mImageDelete;
+        private ImageView mImageAction;
 
         public PlaylistHolder(View itemView) {
             super(itemView);
             mTextName = itemView.findViewById(R.id.text_playlist_name);
-            if (editable) {
-                mImageDelete = itemView.findViewById(R.id.image_delete);
-            }
+            mImageAction = itemView.findViewById(R.id.image_action);
         }
 
         public void bindView(Playlist playlist, final int position) {
             mTextName.setText(playlist.getName());
+
+            if(!mActionClick){
+                mImageAction.setVisibility(View.GONE);
+            }
+
             mTextName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mListener.onItemClicked(position);
                 }
             });
-            if (editable) {
-                mImageDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mListener.onItemDeleteClicked(position);
-                    }
-                });
-            }
+
+            mImageAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.onActionClicked(position);
+                }
+            });
         }
+    }
+
+    public void setActionClick(Boolean b){
+        mActionClick = b;
     }
 }

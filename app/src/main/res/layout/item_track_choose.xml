@@ -1,64 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="70dp"
     android:background="@color/color_white"
-    android:gravity="center">
+    >
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="@dimen/item_track_image_height"
+        android:layout_height="@dimen/item_track_image_height"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        />
+
+    <ImageView
+        android:id="@+id/image_item_track"
+        android:layout_width="@dimen/item_track_image_height"
+        android:layout_height="@dimen/item_track_image_height"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/item_track_image_padding"
+        android:layout_marginRight="@dimen/item_track_image_padding"/>
 
     <RelativeLayout
+        android:id="@+id/relative_track_item"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_track_height">
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/image_item_track"
+        android:layout_toLeftOf="@id/checkBox"
+        android:layout_toRightOf="@id/image_item_track"
+        android:layout_toStartOf="@id/checkBox"
+        android:gravity="center"
+        >
 
-        <ImageView
-            android:id="@+id/image_item_track"
-            android:layout_width="@dimen/item_track_image_height"
-            android:layout_height="@dimen/item_track_image_height"
+        <TextView
+            android:id="@+id/text_item_track"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/item_track_image_padding"
-            android:layout_marginRight="@dimen/item_track_image_padding"/>
-
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="@dimen/item_track_image_height"
-            android:layout_height="@dimen/item_track_image_height"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/controller_padding_bottom"
-            android:layout_marginRight="@dimen/controller_padding_bottom"
+            android:maxLines="1"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/sub_text_title_size"
+            android:textStyle="bold"
             />
 
-        <RelativeLayout
-            android:id="@+id/relative_track_item"
+        <TextView
+            android:id="@+id/text_item_artist"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toEndOf="@id/image_item_track"
-            android:layout_toLeftOf="@id/image_item_action"
-            android:layout_toRightOf="@id/image_item_track"
-            android:layout_toStartOf="@id/image_item_action"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/text_item_track"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:maxLines="1"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/sub_text_title_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/text_item_artist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/text_item_track"
-                android:maxLines="1" />
-
-        </RelativeLayout>
-
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_item_track"
+            android:maxLines="1"
+            />
     </RelativeLayout>
 
 </RelativeLayout>

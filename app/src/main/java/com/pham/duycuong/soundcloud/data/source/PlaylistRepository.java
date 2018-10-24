@@ -9,20 +9,16 @@ public class PlaylistRepository implements PlaylistDataSource {
 
     private static PlaylistRepository sInstance;
     private PlaylistDataSource mLocalDataSource;
-    private PlaylistDataSource mRemoteDataSource;
 
-    private PlaylistRepository(PlaylistDataSource localDataSource,
-                               PlaylistDataSource remoteDataSource) {
+    private PlaylistRepository(PlaylistDataSource localDataSource) {
         mLocalDataSource = localDataSource;
-        mRemoteDataSource = remoteDataSource;
     }
 
-    public static PlaylistRepository getInstance(PlaylistDataSource localDataSource,
-                                                 PlaylistDataSource remoteDataSource) {
+    public static PlaylistRepository getInstance(PlaylistDataSource localDataSource) {
         if (sInstance == null) {
             synchronized (PlaylistRepository.class) {
                 if (sInstance == null) {
-                    sInstance = new PlaylistRepository(localDataSource, remoteDataSource);
+                    sInstance = new PlaylistRepository(localDataSource);
                 }
             }
         }
@@ -54,5 +50,10 @@ public class PlaylistRepository implements PlaylistDataSource {
     public void removeTrackFromPlaylist(@NonNull Track track, @NonNull Playlist playlist,
                                         @NonNull PlaylistCallback callback) {
         mLocalDataSource.removeTrackFromPlaylist(track, playlist, callback);
+    }
+
+    @Override
+    public void updatePlaylist(@NonNull Playlist playlist, @NonNull PlaylistCallback callback) {
+        mLocalDataSource.updatePlaylist(playlist, callback);
     }
 }

@@ -1,11 +1,15 @@
 package com.pham.duycuong.soundcloud.screen.download;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackAdapter;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackClickListener;
@@ -15,6 +19,7 @@ import com.pham.duycuong.soundcloud.data.model.MyDownloadManager;
 import com.pham.duycuong.soundcloud.data.model.Track;
 import com.pham.duycuong.soundcloud.screen.BaseActivity;
 
+import java.io.File;
 import java.util.List;
 
 public class DownloadActivity extends BaseActivity implements DownloadContract.View,
@@ -33,10 +38,15 @@ public class DownloadActivity extends BaseActivity implements DownloadContract.V
         setContentView(R.layout.activity_download);
         setTitle(R.string.title_download);
         mHandler = new Handler();
-        initView();
-        initMusicService();
-        mMyDownloadManager = MyDownloadManager.getInstance(this);
-        mMyDownloadManager.register(this);
+//        initView();
+//        initMusicService();
+//        mMyDownloadManager = MyDownloadManager.getInstance(this);
+//        mMyDownloadManager.register(this);
+
+        File file = new File(getRootCachePath()+"ABC");
+        file.mkdir();
+        file.getAbsolutePath();
+        Log.d("kkkk", "onCreate: "+file.getAbsolutePath());
     }
 
     @Override
@@ -48,6 +58,11 @@ public class DownloadActivity extends BaseActivity implements DownloadContract.V
     void initView() {
         initBaseView();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_left);
+        upArrow.setColorFilter(getResources().getColor(R.color.color_black), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
         mRecyclerDownloaded = findViewById(R.id.recycler_downloaded);
         mRecyclerDownloading = findViewById(R.id.recycler_playlist);
         mAdapterDownloaded = new TrackAdapter();
@@ -101,7 +116,7 @@ public class DownloadActivity extends BaseActivity implements DownloadContract.V
 
     @Override
     public void updateDownloadingTracks(List<Track> tracks) {
-        mAdapterDownloading.setTracks(tracks);
+        mAdapterDownloading.setTrackList(tracks);
     }
 
     @Override
@@ -109,7 +124,7 @@ public class DownloadActivity extends BaseActivity implements DownloadContract.V
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                mAdapterDownloaded.setTracks(tracks);
+                mAdapterDownloaded.setTrackList(tracks);
             }
         };
         mHandler.post(runnable);
@@ -124,7 +139,7 @@ public class DownloadActivity extends BaseActivity implements DownloadContract.V
     @Override
     public void onItemClicked(int position) {
         if (mMusicService != null) {
-            mMusicService.handleNewTrack(mAdapterDownloaded.getTracks(), position, false);
+            mMusicService.handleNewTrack(mAdapterDownloaded.getTrackList(), position, false);
         }
     }
 
@@ -143,7 +158,24 @@ public class DownloadActivity extends BaseActivity implements DownloadContract.V
     @Override
     public void onPlay(Track track) {
         if (mMusicService != null) {
-            mMusicService.handleNewTrack(mAdapterDownloaded.getTracks(), track);
+            mMusicService.handleNewTrack(mAdapterDownloaded.getTrackList(), track);
         }
+    }
+
+    private String getRootCachePath() {
+        String mCacheRootPath = null;
+        if (Environment.getExternalStorageDirectory().exists()) {
+            mCacheRootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        if (mCacheRootPath != null && mCacheRootPath.trim().length() != 0) {
+            File testFile = new File(mCacheRootPath);
+            if (!(testFile.exists() && testFile.canRead() && testFile.canWrite())) {
+                mCacheRootPath = null;
+            }
+        }
+        if (mCacheRootPath == null || mCacheRootPath.trim().length() == 0) {
+            mCacheRootPath = getCacheDir().getPath();
+        }
+        return mCacheRootPath;
     }
 }

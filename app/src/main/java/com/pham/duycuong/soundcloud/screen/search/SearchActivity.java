@@ -81,7 +81,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void showSearchResult(List<Track> tracks) {
-        mTrackAdapter.setTracks(tracks);
+        mTrackAdapter.setTrackList(tracks);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class SearchActivity extends BaseActivity
     public void onItemClicked(int position) {
         if (mMusicService != null) {
             ArrayList<Track> tracks = new ArrayList<>();
-            tracks.add(mTrackAdapter.getTracks().get(position));
+            tracks.add(mTrackAdapter.getTrackList().get(position));
             mMusicService.handleNewTrack(tracks, 0, true);
         }
     }

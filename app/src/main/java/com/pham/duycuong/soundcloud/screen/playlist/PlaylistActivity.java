@@ -1,19 +1,21 @@
 package com.pham.duycuong.soundcloud.screen.playlist;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.LayoutInflater;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.pham.duycuong.soundcloud.R;
@@ -21,44 +23,56 @@ import com.pham.duycuong.soundcloud.custom.dialog.CreatePlaylistDialog;
 import com.pham.duycuong.soundcloud.custom.adapter.PlaylistAdapter;
 import com.pham.duycuong.soundcloud.custom.adapter.PlaylistClickListener;
 import com.pham.duycuong.soundcloud.custom.dialog.DeleteDialog;
-import com.pham.duycuong.soundcloud.custom.dialog.PlaylistDetailBottomSheet;
-import com.pham.duycuong.soundcloud.custom.dialog.PlaylistDetailBottomSheetListener;
+import com.pham.duycuong.soundcloud.custom.dialog.DetailBottomSheetFragment;
+import com.pham.duycuong.soundcloud.custom.dialog.PlaylistBottomSheet;
+import com.pham.duycuong.soundcloud.custom.dialog.PlaylistBottomSheetListener;
+import com.pham.duycuong.soundcloud.custom.dialog.RenamePlaylistDialog;
 import com.pham.duycuong.soundcloud.data.model.Playlist;
-import com.pham.duycuong.soundcloud.data.model.Track;
 import com.pham.duycuong.soundcloud.data.source.PlaylistDataSource;
 import com.pham.duycuong.soundcloud.data.source.PlaylistRepository;
 import com.pham.duycuong.soundcloud.data.source.local.MyDBHelper;
 import com.pham.duycuong.soundcloud.data.source.local.PlaylistLocalDataSource;
-import com.pham.duycuong.soundcloud.data.source.remote.PlaylistRemoteDataSource;
 import com.pham.duycuong.soundcloud.screen.BaseActivity;
+import com.pham.duycuong.soundcloud.screen.choose_track.ChooseTrackActivity;
 import com.pham.duycuong.soundcloud.screen.playlistdetail.PlayListDetailActivity;
 import com.pham.duycuong.soundcloud.util.AppExecutors;
 
 import java.util.List;
 
 public class PlaylistActivity extends BaseActivity
-        implements PlaylistContract.View, PlaylistClickListener, PlaylistDetailBottomSheetListener {
+        implements PlaylistContract.View, PlaylistClickListener, PlaylistBottomSheetListener {
 
     private PlaylistContract.Presenter mPresenter;
     private RecyclerView mRecyclerPlaylist;
     private PlaylistAdapter mPlaylistAdapter;
     private PlaylistRepository mPlaylistRepository;
+    private PlaylistBottomSheet mPlaylistBottomSheet;
     Handler mHandler;
+
+    private TextView mTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlsit);
-        setTitle(R.string.title_playlist);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setTitle(Html.fromHtml(
+                "<font color='#000000'>" + getString(R.string.title_playlist) + " </font>"));
+
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_left);
+        upArrow.setColorFilter(getResources().getColor(R.color.color_black),
+                PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
         mHandler = new Handler();
-        mPlaylistRepository = PlaylistRepository.getInstance(
-                PlaylistLocalDataSource.getInstance(
-                        new AppExecutors(), MyDBHelper.getInstance(this)),
-                PlaylistRemoteDataSource.getInstance());
-        initBaseView();
+
+        mTextView = findViewById(R.id.textView);
         mRecyclerPlaylist = findViewById(R.id.recycler_playlist);
-        mPlaylistAdapter = new PlaylistAdapter(this, true);
+
+        mPlaylistAdapter = new PlaylistAdapter(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         RecyclerView.ItemDecoration decoration =
                 new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
@@ -66,14 +80,17 @@ public class PlaylistActivity extends BaseActivity
         mRecyclerPlaylist.setLayoutManager(layoutManager);
         mRecyclerPlaylist.setAdapter(mPlaylistAdapter);
 
-        mPresenter = new PlaylistPresenter();
+        mPlaylistRepository = PlaylistRepository.getInstance(
+                PlaylistLocalDataSource.getInstance(new AppExecutors(),
+                        MyDBHelper.getInstance(this)));
+
+        mPresenter = new PlaylistPresenter(mPlaylistRepository);
         mPresenter.setView(this);
-        mPresenter.onStart();
+        mPresenter.getPlaylist();
+
+        initBaseView();
         initMusicService();
-        updateView();
     }
-
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -81,62 +98,25 @@ public class PlaylistActivity extends BaseActivity
         return super.onSupportNavigateUp();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_playlist, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_add:
-                new CreatePlaylistDialog(this, mPlaylistRepository,
-                        new PlaylistDataSource.PlaylistCallback() {
-                            @Override
-                            public void onSuccess() {
-                                Runnable runnable = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateView();
-                                    }
-                                };
-                                mHandler.post(runnable);
-                            }
-
-                            @Override
-                            public void onFail() {
-
-                            }
-                        }).show();
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    void updateView() {
-        mPlaylistRepository.getPlaylist(new PlaylistDataSource.LoadPlaylistCallback() {
-            @Override
-            public void onPlaylistLoaded(final List<Playlist> playlists) {
-                Runnable r = new Runnable() {
-                    @Override
-                    public void run() {
-                        mPlaylistAdapter.setPlaylists(playlists);
-                    }
-                };
-                mHandler.post(r);
-
-              //  mPlaylistAdapter.setPlaylists(playlists);
-            }
-
-            @Override
-            public void onDataNotAvailable() {
-
-            }
-        });
-    }
+//    void updateView() {
+//        mPlaylistRepository.getPlaylist(new PlaylistDataSource.LoadPlaylistCallback() {
+//            @Override
+//            public void onPlaylistLoaded(final List<Playlist> playlists) {
+//                Runnable r = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mPlaylistAdapter.setPlaylists(playlists);
+//                    }
+//                };
+//                mHandler.post(r);
+//            }
+//
+//            @Override
+//            public void onDataNotAvailable() {
+//
+//            }
+//        });
+//    }
 
     @Override
     public void onItemClicked(int position) {
@@ -144,31 +124,11 @@ public class PlaylistActivity extends BaseActivity
     }
 
     @Override
-    public void onItemDeleteClicked(final int position) {
-        DeleteDialog d = new DeleteDialog(this,
-                mPlaylistAdapter.getPlaylists().get(position)) {
-            @Override
-            public void onDelete() {
-                mPlaylistRepository.deleteList(mPlaylistAdapter.getPlaylists().get(position),
-                        new PlaylistDataSource.PlaylistCallback() {
-                            @Override
-                            public void onSuccess() {
-                                Runnable runnable = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateView();
-                                    }
-                                };
-                                mHandler.post(runnable);
-                            }
-
-                            @Override
-                            public void onFail() {
-                            }
-                        });
-            }
-        };
-        d.show();
+    public void onActionClicked(final int position) {
+        mPlaylistBottomSheet =
+                PlaylistBottomSheet.newInstance(mPlaylistAdapter.getPlaylists().get(position));
+        mPlaylistBottomSheet.setListener(this);
+        mPlaylistBottomSheet.show(getSupportFragmentManager(), mPlaylistBottomSheet.getTag());
     }
 
     @Override
@@ -177,14 +137,7 @@ public class PlaylistActivity extends BaseActivity
         finish();
     }
 
-    @Override
-    public void onItemClicked(List<Track> tracks, int position) {
-        if (mMusicService != null) {
-            mMusicService.handleNewTrack(tracks, position, false);
-        }
-    }
-
-    public void onClickFloatButton(View view){
+    public void onClickFloatButton(View view) {
         new CreatePlaylistDialog(this, mPlaylistRepository,
                 new PlaylistDataSource.PlaylistCallback() {
                     @Override
@@ -192,10 +145,9 @@ public class PlaylistActivity extends BaseActivity
                         Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(PlaylistActivity.this,
-                                        getString(R.string.msg_saved),
+                                Toast.makeText(PlaylistActivity.this, getString(R.string.msg_saved),
                                         Toast.LENGTH_SHORT).show();
-                                updatePlayList();
+                                mPresenter.getPlaylist();
                             }
                         };
                         mHandler.post(runnable);
@@ -206,7 +158,8 @@ public class PlaylistActivity extends BaseActivity
                         Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(PlaylistActivity.this, getString(R.string.msg_saved_fail), Toast.LENGTH_SHORT)
+                                Toast.makeText(PlaylistActivity.this,
+                                        getString(R.string.msg_saved_fail), Toast.LENGTH_SHORT)
                                         .show();
                             }
                         };
@@ -215,23 +168,72 @@ public class PlaylistActivity extends BaseActivity
                 }).show();
     }
 
-    void updatePlayList() {
-        mPlaylistRepository.getPlaylist(new PlaylistDataSource.LoadPlaylistCallback() {
+    @Override
+    public void displayPlaylist(final List<Playlist> playlists) {
+        if (playlists != null) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    mTextView.setVisibility(View.GONE);
+                    mRecyclerPlaylist.setVisibility(View.VISIBLE);
+                    mPlaylistAdapter.setPlaylists(playlists);
+                }
+            };
+            mHandler.post(runnable);
+        }
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+        Runnable runnable = new Runnable() {
             @Override
-            public void onPlaylistLoaded(final List<Playlist> playlists) {
-                Runnable runnable = new Runnable() {
+            public void run() {
+                mRecyclerPlaylist.setVisibility(View.GONE);
+                mTextView.setVisibility(View.VISIBLE);
+            }
+        };
+        mHandler.post(runnable);
+    }
+
+    @Override
+    public void deletePlaylist(final Playlist playlist) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.title_delete_playlist))
+                .setMessage(getString(R.string.msg_delete_playlist))
+                .setPositiveButton(getString(R.string.title_delete), new DialogInterface
+                        .OnClickListener() {
                     @Override
-                    public void run() {
-                        mPlaylistAdapter.setPlaylists(playlists);
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mPresenter.deletePlaylist(playlist);
+                        mPlaylistBottomSheet.dismiss();
                     }
-                };
-                mHandler.post(runnable);
-            }
+                })
+                .setNegativeButton(getString(R.string.title_cancel), new DialogInterface
+                        .OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
 
-            @Override
-            public void onDataNotAvailable() {
+    @Override
+    public void renamePlaylist(Playlist playlist) {
+        RenamePlaylistDialog dialog = new RenamePlaylistDialog(this, playlist, mPlaylistRepository,
+                new PlaylistDataSource.PlaylistCallback() {
+                    @Override
+                    public void onSuccess() {
+                        mPresenter.getPlaylist();
+                        mPlaylistBottomSheet.dismiss();
+                    }
 
-            }
-        });
+                    @Override
+                    public void onFail() {
+
+                    }
+                });
+        dialog.show();
     }
 }

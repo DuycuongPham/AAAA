@@ -107,4 +107,16 @@ public class PlaylistLocalDataSource implements PlaylistDataSource {
         };
         mAppExecutors.diskIO().execute(runnable);
     }
+
+    @Override
+    public void updatePlaylist(@NonNull final Playlist playlist, @NonNull final PlaylistCallback callback) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                mPlaylistDao.updatePlaylist(playlist);
+                callback.onSuccess();
+            }
+        };
+        mAppExecutors.diskIO().execute(runnable);
+    }
 }

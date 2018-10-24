@@ -27,7 +27,7 @@ public class CategoryPresenter implements CategoryContract.Presenter{
 
     @Override
     public void onStart() {
-        getTracks();
+
     }
 
     @Override
@@ -36,20 +36,12 @@ public class CategoryPresenter implements CategoryContract.Presenter{
     }
 
     @Override
-    public void getTracks() {
+    public void getTracks(int page) {
         mView.changeLoadingIndicatorState(true);
-        mTracksDataSource.getTracksByGenre(mCategory.getGenre(), PAGE, new TracksDataSource.LoadTracksCallback() {
+        mTracksDataSource.getTracksByGenre(mCategory.getGenre(), page, new TracksDataSource.LoadTracksCallback() {
 
             @Override
             public void onTracksLoaded(List<Track> tracks) {
-                mView.changeLoadingIndicatorState(false);
-//                List<Track> tracks1 = new ArrayList<>();
-//                for(int i=0; i<tracks.size();i++){
-//                    if(tracks.get(i).isDownloadable()){
-//                        tracks.add(tracks.get(i));
-//                    }
-//                }
-                Log.d("xxx", "onTracksLoaded: "+ tracks.size());
                 mView.showTracks(tracks);
             }
 

@@ -52,4 +52,9 @@ public class PlaylistRemoteDataSource implements PlaylistDataSource {
                                         @NonNull PlaylistCallback callback) {
 
     }
+
+    @Override
+    public void updatePlaylist(@NonNull Playlist playlist, @NonNull PlaylistCallback callback) {
+
+    }
 }

@@ -2,6 +2,9 @@ package com.pham.duycuong.soundcloud.util;
 
 public class Constant {
 
+    public static final String PLAY_LIST = "PLAY_LIST";
+    public static final String BUNDLE ="BUNDLE";
+
     private Constant() {
     }
 

@@ -28,6 +28,7 @@ import java.util.List;
 public class MyDownloadManager implements DownloadObservable {
 
     private static final String SEPARATE = "/";
+    private static final String FOLDER_NAME = "/MUSIC_CUONG";
     private static MyDownloadManager sInstance;
     private Context mContext;
     private ArrayList<Track> mTracksDownloading;
@@ -68,24 +69,23 @@ public class MyDownloadManager implements DownloadObservable {
     }
 
     public void deleteTrack(Track track) {
-        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File f = new File(new StringBuilder(baseDir)
-                .append(track.getLocalPath()).append(SEPARATE)
-                .append(track.getId()).append(Constant.SoundCloud.EXTENSION).toString());
+        //        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File f = new File(track.getLocalPath());
+        //                .append(track.getLocalPath()).append(SEPARATE)
+        //                .append(track.getId()).append(Constant.SoundCloud.EXTENSION).toString());
         f.delete();
 
-        mTracksRepository.deleteTrack(track.getId(),
-                new TracksDataSource.TrackCallback() {
-                    @Override
-                    public void onSuccess() {
-                        updateDownloadedTrack();
-                    }
+        mTracksRepository.deleteTrack(track.getId(), new TracksDataSource.TrackCallback() {
+            @Override
+            public void onSuccess() {
+                updateDownloadedTrack();
+            }
 
-                    @Override
-                    public void onFail() {
+            @Override
+            public void onFail() {
 
-                    }
-                });
+            }
+        });
     }
 
     public static MyDownloadManager getInstance(Context context) {
@@ -99,26 +99,30 @@ public class MyDownloadManager implements DownloadObservable {
         if (!track.isDownloadable()) {
             return;
         }
-        String fileName = new StringBuilder()
-                .append(track.getId())
+        String fileName = new StringBuilder().append(track.getId())
                 .append(Constant.SoundCloud.EXTENSION)
                 .toString();
 
         Uri uri = Uri.parse(track.getDownloadUrl());
-        File file = mContext.getFilesDir();//Returns the absolute path to the directory on the filesystem where files created
-        file.mkdir();//Creates the directory named by this abstract pathname, including any necessary but nonexistent parent directories.
-        DownloadManager downloadManager = (DownloadManager)
-                mContext.getSystemService(Context.DOWNLOAD_SERVICE);
-        long id = downloadManager.enqueue(new DownloadManager.Request(uri)
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+        File file = new File(getRootCachePath()
+                + FOLDER_NAME);//Returns the absolute path to the directory on the filesystem
+        // where files created
+        file.mkdir();//Creates the directory named by this abstract pathname, including any
+        // necessary but nonexistent parent directories.
+        Log.d("kkk", "download: " + file.getAbsolutePath());
+
+        DownloadManager downloadManager =
+                (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+        long id = downloadManager.enqueue(new DownloadManager.Request(uri).setAllowedNetworkTypes(
+                DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setAllowedOverRoaming(false)
                 .setTitle(track.getTitle())
-                .setDestinationInExternalPublicDir(file.getAbsolutePath(), fileName));
+                .setDestinationInExternalPublicDir(FOLDER_NAME, fileName));
         mContext.registerReceiver(onDownload,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         mTracksDownloading.add(track);
         mIdTrackDownloading.add(id);
-        mPathTrackDownloading.add(file.getAbsolutePath());
+        mPathTrackDownloading.add(getRootCachePath() + FOLDER_NAME + "/" + fileName);
         notifyDownloadStateChanged();
         notifyDownloadingTracksChanged();
     }
@@ -201,5 +205,22 @@ public class MyDownloadManager implements DownloadObservable {
         for (DownloadObserver o : mObservers) {
             o.updateDownloadedTracks(mTracksDownloaded);
         }
+    }
+
+    private String getRootCachePath() {
+        String mCacheRootPath = null;
+        if (Environment.getExternalStorageDirectory().exists()) {
+            mCacheRootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        if (mCacheRootPath != null && mCacheRootPath.trim().length() != 0) {
+            File testFile = new File(mCacheRootPath);
+            if (!(testFile.exists() && testFile.canRead() && testFile.canWrite())) {
+                mCacheRootPath = null;
+            }
+        }
+        if (mCacheRootPath == null || mCacheRootPath.trim().length() == 0) {
+            mCacheRootPath = mContext.getCacheDir().getPath();
+        }
+        return mCacheRootPath;
     }
 }

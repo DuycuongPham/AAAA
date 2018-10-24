@@ -18,8 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.TrackViewHolder>
-        implements MusicServiceObserver {
+public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.TrackViewHolder> {
 
     private List<Track> mTracks;
     private Track mTrack;
@@ -86,45 +85,6 @@ public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.
         return mTracks == null ? 0 : mTracks.size();
     }
 
-    @Override
-    public void updateLoopMode(int loopMode) {
-        //no need to implement
-    }
-
-    @Override
-    public void updateShuffleMode(int shuffleMode) {
-        //no need to implement
-    }
-
-    @Override
-    public void updateProgress(long progress, long duration) {
-        //no need to implement
-    }
-
-    @Override
-    public void updateTrack(@Nullable Track track) {
-        mTrack = track;
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public void updateTracks(ArrayList<Track> tracks) {
-        //no need to implement
-    }
-
-    @Override
-    public void updateState(int playState) {
-        mPlayState = playState;
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public void updateFirstTime(int loopMode, int shuffleMode, long progress, long duration,
-            @Nullable Track track, ArrayList<Track> tracks, int playState) {
-        updateTrack(track);
-        updateState(playState);
-    }
-
     public class TrackViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mTextViewTrack;
@@ -159,24 +119,6 @@ public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.
                     }
                 }
             });
-//            mRelativeItem.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (mClickListener != null) {
-//                        mClickListener.onItemClicked(position);
-//                    }
-//                }
-//            });
-
-            //            if (isDownloading) {
-            //                AnimationDrawable animation = (AnimationDrawable) mImageViewAction
-            // .getBackground();
-            //                animation.start();
-            //            }
-            //
-            //            if (isSimple) {
-            //                mImageViewAction.setBackgroundResource(R.drawable.ic_delete);
-            //            }
 
             mImageViewTrack.setBackgroundResource(android.R.color.transparent);
             mImageViewTrack.setImageResource(android.R.color.transparent);

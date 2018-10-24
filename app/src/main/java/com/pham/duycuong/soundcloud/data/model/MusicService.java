@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import android.util.Log;
 import com.pham.duycuong.soundcloud.data.model.playobserver.MusicServiceObservable;
 import com.pham.duycuong.soundcloud.data.model.playobserver.MusicServiceObserver;
 import com.pham.duycuong.soundcloud.data.source.setting.LoopMode;
@@ -28,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class MusicService extends Service
-        implements MusicServiceObservable, MediaPlayer.OnPreparedListener {
+        implements MusicServiceObservable, MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnErrorListener {
 
     private static final int CHECK_MEDIA_DELAY = 100; /* time delay when check media's progress*/
     private static final int SERVICE_ID = 10;
@@ -53,6 +54,8 @@ public class MusicService extends Service
     private ArrayList<Integer> mShuffleList;
     private int mCurrentTrackShuffle;
     private MyNotification mMyNotification;
+
+    private String mTrackUrl;
 
     /**
      * @return static instance of MusicService class
@@ -103,6 +106,7 @@ public class MusicService extends Service
                     if (currentTemp != mProgress) {
                         mProgress = currentTemp;
                         mDuration = mMediaPlayer.getDuration();
+                        Log.d("kkk", "run: " + mDuration);
                         notifyProgressChanged();
                     }
                 }
@@ -127,8 +131,8 @@ public class MusicService extends Service
         registerReceiver(handler, filter);
         AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         if (manager != null) {
-            manager.registerMediaButtonEventReceiver(new ComponentName(this,
-                    MyBroadcastReceiver.class));
+            manager.registerMediaButtonEventReceiver(
+                    new ComponentName(this, MyBroadcastReceiver.class));
         }
     }
 
@@ -146,8 +150,8 @@ public class MusicService extends Service
         SharedPreferences preferences =
                 getSharedPreferences(Constant.SharedConstant.PREF_FILE, MODE_PRIVATE);
         int loopMode = preferences.getInt(Constant.SharedConstant.PREF_LOOP_MODE, LoopMode.OFF);
-        int shuffleMode = preferences.getInt(Constant.SharedConstant.PREF_SHUFFLE_MODE,
-                ShuffleMode.OFF);
+        int shuffleMode =
+                preferences.getInt(Constant.SharedConstant.PREF_SHUFFLE_MODE, ShuffleMode.OFF);
         if (shuffleMode == ShuffleMode.ON) {
             handleShuffle();
         }
@@ -329,7 +333,7 @@ public class MusicService extends Service
     /**
      * force replay if the track is playing
      *
-     * @param tracks   list new track
+     * @param tracks list new track
      * @param position of track to be playing
      */
     public void handleNewTrack(List<Track> tracks, int position, boolean isReplay) {
@@ -351,7 +355,7 @@ public class MusicService extends Service
      * force replay if the track is playing
      *
      * @param tracks new list of track
-     * @param track  to be playing
+     * @param track to be playing
      */
     public void handleNewTrack(List<Track> tracks, Track track) {
         handleNewTrack(tracks, tracks.indexOf(track), true);
@@ -390,23 +394,20 @@ public class MusicService extends Service
         mPlayingTrack = mTracks.get(mCurrentTrackIndex);
         if (mPlayingTrack.getLocalPath().isEmpty()) {
             try {
-                mMediaPlayer.setDataSource(mPlayingTrack.getSteamUrl());
+                mTrackUrl = mPlayingTrack.getSteamUrl();
+                mMediaPlayer.setDataSource(mTrackUrl);
                 mLastState = mPlayState;
                 mPlayState = PlayState.PREPARING;
                 notifyStateChanged();
-                mMediaPlayer.prepareAsync();
                 mMediaPlayer.setOnPreparedListener(MusicService.this);
+                mMediaPlayer.setOnErrorListener(this);
+                mMediaPlayer.prepareAsync();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             try {
-                String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
-                String path = baseDir +
-                        mPlayingTrack.getLocalPath() + SEPARATE +
-                        mPlayingTrack.getId() + Constant.SoundCloud.EXTENSION;
-                mMediaPlayer.setDataSource(path);
-//                mMediaPlayer.setDataSource(mPlayingTrack.getLocalPath());
+                mMediaPlayer.setDataSource(mPlayingTrack.getLocalPath());
                 mMediaPlayer.prepare();
                 mMediaPlayer.start();
                 mLastState = mPlayState;
@@ -454,16 +455,31 @@ public class MusicService extends Service
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        mMediaPlayer.start();
+        mediaPlayer.start();
         mLastState = mPlayState;
         mPlayState = PlayState.PLAYING;
-        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 handleNext();
             }
         });
         notifyStateChanged();
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+//        int i = 2;
+//        Log.d("kkkk", "onError: sv");
+//        mp.reset();
+//
+//        try {
+//            mp.setDataSource(mTrackUrl);
+//            mp.prepareAsync();
+//        } catch (Exception e) {
+//            Log.d("xxxx", "onError: " + e);
+//        }
+        return true;
     }
 
     @Override
@@ -495,12 +511,8 @@ public class MusicService extends Service
      */
     @Override
     public void register(MusicServiceObserver observer) {
-        observer.updateFirstTime(mSetting.getLoopMode(),
-                mSetting.getShuffleMode(),
-                mProgress,
-                mDuration,
-                mTracks.size() == 0 ? null : mTracks.get(mCurrentTrackIndex),
-                mTracks,
+        observer.updateFirstTime(mSetting.getLoopMode(), mSetting.getShuffleMode(), mProgress,
+                mDuration, mTracks.size() == 0 ? null : mTracks.get(mCurrentTrackIndex), mTracks,
                 mPlayState);
         if (mMusicServiceObservers.contains(observer)) {
             return;
@@ -580,5 +592,4 @@ public class MusicService extends Service
             }
         }
     }
-
 }

@@ -14,7 +14,6 @@ import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.data.model.PlayState;
 import com.pham.duycuong.soundcloud.data.model.Track;
 import com.pham.duycuong.soundcloud.data.model.playobserver.MusicServiceObserver;
-import com.pham.duycuong.soundcloud.util.Constant;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import java.util.List;
 public class TrackAdapter
         extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder> implements MusicServiceObserver {
 
-    private List<Track> mTracks;
+    private List<Track> mTrackList;
     private Track mTrack;
     private @PlayState
     int mPlayState;
@@ -36,23 +35,23 @@ public class TrackAdapter
     }
 
     public TrackAdapter() {
-        mTracks = new ArrayList<>();
+        mTrackList = new ArrayList<>();
         mPlayState = PlayState.PAUSED;
     }
 
     public TrackAdapter(boolean isDownloading, boolean isSimple) {
-        mTracks = new ArrayList<>();
+        mTrackList = new ArrayList<>();
         this.isDownloading = isDownloading;
         this.isSimple = isSimple;
         mPlayState = PlayState.PAUSED;
     }
 
-    public List<Track> getTracks() {
-        return mTracks;
+    public List<Track> getTrackList() {
+        return mTrackList;
     }
 
-    public void setTracks(List<Track> tracks) {
-        mTracks = tracks;
+    public void setTrackList(List<Track> trackList) {
+        mTrackList = trackList;
         notifyDataSetChanged();
     }
 
@@ -61,14 +60,21 @@ public class TrackAdapter
         notifyDataSetChanged();
     }
 
+    public void appendItem(Track track) {
+        if (mTrackList != null) {
+            mTrackList.add(track);
+            notifyDataSetChanged();
+        }
+    }
+
     public void moveTrack(int oldPos, int newPos){
-        Track item=mTracks.get(oldPos);
-        mTracks.remove(oldPos);
-        mTracks.add(newPos, item);
+        Track item= mTrackList.get(oldPos);
+        mTrackList.remove(oldPos);
+        mTrackList.add(newPos, item);
     }
 
     public void deleteTrack(int pos){
-        mTracks.remove(pos);
+        mTrackList.remove(pos);
     }
 
     @Override
@@ -82,12 +88,12 @@ public class TrackAdapter
 
     @Override
     public void onBindViewHolder(TrackAdapter.TrackViewHolder holder, int position) {
-        holder.bindView(mTracks.get(position), position);
+        holder.bindView(mTrackList.get(position), position);
     }
 
     @Override
     public int getItemCount() {
-        return mTracks == null ? 0 : mTracks.size();
+        return mTrackList == null ? 0 : mTrackList.size();
     }
 
     @Override
@@ -135,7 +141,6 @@ public class TrackAdapter
         private ImageView mImageViewTrack;
         private TextView mTextViewArtist;
         private ImageView mImageViewAction;
-        private RelativeLayout mRelativeItem;
 
         public TrackViewHolder(View itemView) {
             super(itemView);
@@ -143,12 +148,14 @@ public class TrackAdapter
             mTextViewArtist = itemView.findViewById(R.id.text_item_artist);
             mImageViewTrack = itemView.findViewById(R.id.image_item_track);
             mImageViewAction = itemView.findViewById(R.id.image_item_action);
-            mRelativeItem = itemView.findViewById(R.id.relative_track_item);
         }
 
         public void bindView(final Track track, final int position) {
             if (track == null) {
                 return;
+            }
+            if(track.isDownloadable()){
+                itemView.setBackgroundColor(R.color.color_gray);
             }
             mTextViewTrack.setText(track.getTitle());
             mTextViewArtist.setText(track.getUserName());
@@ -160,7 +167,7 @@ public class TrackAdapter
                     }
                 }
             });
-            mRelativeItem.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (mItemClickListener != null) {

@@ -13,19 +13,19 @@
     <string name="title_genre">Genre:</string>
     <string name="title_user">User:</string>
     <string name="title_download">Download</string>
-    <string name="title_delete">Delete</string>
+    <string name="title_delete">Xóa</string>
     <string name="title_play">Play</string>
-    <string name="title_add_to_playlist">Add To Playlist</string>
-    <string name="title_create_playlist">Create new playlist</string>
+    <string name="title_add_to_playlist">Thêm vào Playlist</string>
+    <string name="title_create_playlist">Tạo Playlist</string>
     <string name="title_playlists">Playlists</string>
     <string name="title_downloading">Downloading</string>
     <string name="title_downloaded">Downloaded</string>
     <string name="msg_play_list_name">Tên Playlist</string>
     <string name="title_create">Tạo</string>
     <string name="title_cancel">Hủy</string>
-    <string name="mgs_empty_name">Name must not empty!</string>
-    <string name="msg_saved">Saved</string>
-    <string name="msg_saved_fail">Saving fail</string>
+    <string name="mgs_empty_name">Tên không được rỗng</string>
+    <string name="msg_saved">Tạo Playlist thành công</string>
+    <string name="msg_saved_fail">Tạo Playlist thất bại</string>
     <string name="title_search">Search</string>
     <string name="action_phone_state">android.intent.action.PHONE_STATE</string>
     <string name="extra_state">state</string>
@@ -38,8 +38,15 @@
     <string name="title_offline">CÁ NHÂN</string>
     <string name="title_dongbo">Đồng bộ</string>
     <string name="title_song">bài hát</string>
-
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_complete">Xong</string>
+    <string name="title_list_song">Danh sách bài hát</string>
+    <string name="title_choose_song">Chọn bài hát</string>
+    <string name="title_save">Lưu</string>
+    <string name="title_save2">LƯU</string>
+    <string name="title_no_playlist_available">Không có Playlist nào.</string>
+    <string name="title_no_song_available">Không có bài hát nào.</string>
+    <string name="msg_failed_save">Lưu không thành công</string>
+    <string name="title_delete_playlist">Xóa Playlist</string>
+    <string name="title_rename_playlist">Đổi tên Playlist</string>
+    <string name="msg_delete_playlist">Bạn có muốn xóa playlist</string>
 </resources>

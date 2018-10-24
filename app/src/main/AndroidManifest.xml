@@ -48,9 +48,10 @@
 
         <activity android:name=".screen.playlistdetail.PlayListDetailActivity">
         </activity>
-        <activity android:name=".screen.playlist.ChooseSongActivity">
-        </activity>
         <activity android:name=".screen.songlist.SongListActivity">
+        </activity>
+        <activity android:name=".screen.choose_track.ChooseTrackActivity"
+            android:theme="@style/AppTheme">
         </activity>
     </application>
 
