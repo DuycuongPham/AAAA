@@ -6,37 +6,104 @@
     android:background="@android:color/white"
     tools:context="com.pham.duycuong.soundcloud.screen.personal.PersonalFragment"
     >
-    <TextView
+
+    <LinearLayout
+        android:id="@+id/layoutUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#961f70"
+        android:padding="@dimen/dp_10"
+        >
+        <ImageView
+            android:layout_width="@dimen/icon_size_img"
+            android:layout_height="@dimen/icon_size_img"
+            android:src="@drawable/ic_user"
+            android:layout_marginRight="@dimen/dp_20"
+
+            />
+        <TextView
+            android:id="@+id/textUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cuong Pham"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/color_black"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layoutSync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:text="@string/title_online"
-        android:textSize="20sp"
-        />
+        >
+        <ImageView
+            android:layout_width="@dimen/icon_size_img"
+            android:layout_height="@dimen/icon_size_img"
+            android:src="@drawable/ic_cloud_sync"
+            android:layout_marginRight="@dimen/dp_20"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_dongbo"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/color_black"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btnDownload"
+    <LinearLayout
+        android:id="@+id/layoutPlaylist"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="left|center_vertical"
-        android:background="@drawable/button"
-        android:text="@string/title_download"
-        />
-    <Button
-        android:id="@+id/btnPlayList"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="left|center_vertical"
-        android:text="@string/title_playlists"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        >
+        <ImageView
+            android:layout_width="@dimen/icon_size_img"
+            android:layout_height="@dimen/icon_size_img"
+            android:src="@drawable/ic_play_list"
+            android:layout_marginRight="@dimen/dp_20"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_playlist"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/color_black"
+            android:layout_gravity="center"
+            />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btnSongList"
+    <LinearLayout
+        android:id="@+id/layoutSongList"
         android:layout_width="match_parent"
-        android:text="Song list"
-        android:layout_height="50dp"
-        android:gravity="left|center_vertical"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        >
+        <ImageView
+            android:layout_width="@dimen/icon_size_img"
+            android:layout_height="@dimen/icon_size_img"
+            android:src="@drawable/ic_song_list"
+            android:layout_marginRight="@dimen/dp_20"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_list_song"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/color_black"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
 
 </LinearLayout>

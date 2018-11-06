@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "732707722336",
+    "firebase_url": "https://music-16769.firebaseio.com",
+    "project_id": "music-16769",
+    "storage_bucket": "music-16769.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732707722336:android:6decd2da7285485e",
+        "android_client_info": {
+          "package_name": "com.pham.duycuong.soundcloud"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "732707722336-igocvs844f225q69u4f50q8dpm72bldu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8LPPBDCUui-KRndAkB-iCMZh2EA-DFoY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

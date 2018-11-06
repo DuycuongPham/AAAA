@@ -3,6 +3,7 @@
     package="com.pham.duycuong.soundcloud">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
@@ -50,8 +51,13 @@
         </activity>
         <activity android:name=".screen.songlist.SongListActivity">
         </activity>
-        <activity android:name=".screen.choose_track.ChooseTrackActivity"
+        <activity
+            android:name=".screen.choose_track.ChooseTrackActivity"
             android:theme="@style/AppTheme">
+        </activity>
+        <activity android:name=".screen.sync.SyncActivity">
+        </activity>
+        <activity android:name=".screen.sync.SigninActivity">
         </activity>
     </application>
 

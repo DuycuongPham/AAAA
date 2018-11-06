@@ -37,6 +37,7 @@
     <string name="title_online">ONLINE</string>
     <string name="title_offline">CÁ NHÂN</string>
     <string name="title_dongbo">Đồng bộ</string>
+    <string name="title_dongbo2">ĐỒNG BỘ</string>
     <string name="title_song">bài hát</string>
     <string name="title_complete">Xong</string>
     <string name="title_list_song">Danh sách bài hát</string>
@@ -49,4 +50,10 @@
     <string name="title_delete_playlist">Xóa Playlist</string>
     <string name="title_rename_playlist">Đổi tên Playlist</string>
     <string name="msg_delete_playlist">Bạn có muốn xóa playlist</string>
+    <string name="title_internet_not_available">Không có kết nối Internet</string>
+    <string name="title_retry">THỬ LẠI</string>
+    <string name="title_signin">Đăng nhập</string>
+    <string name="title_song2">Bài hát</string>
+    <string name="msg_sigin_activity">Để thực hiện chức năng đồng bộ, bạn cần phải đăng nhập tài khoản Google</string>
+
 </resources>

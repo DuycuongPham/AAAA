@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
+import android.widget.EditText;
 import android.widget.SearchView;
 
+import android.widget.TextView;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackAdapter;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackClickListener;
@@ -30,6 +32,8 @@ public class SearchActivity extends BaseActivity
     private SearchContract.Presenter mPresenter;
     private RecyclerView mRecyclerSearchResult;
     private TrackAdapter mTrackAdapter;
+    private TextView mTextViewNoInternet;
+    private TextView mTextViewRetry;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +41,9 @@ public class SearchActivity extends BaseActivity
         setContentView(R.layout.activity_search);
         initBaseView();
         initMusicService();
+        if(isNetworkAvailable()){
+
+        }
         mRecyclerSearchResult = findViewById(R.id.recycler_search_result);
         TracksDataSource dataSource = TracksRepository
                 .getInstance(TracksRemoteDataSource.getInstance(),
@@ -44,7 +51,6 @@ public class SearchActivity extends BaseActivity
                                 MyDBHelper.getInstance(this)));
         mPresenter = new SearchPresenter(dataSource);
         mPresenter.setView(this);
-        mPresenter.onStart();
         mTrackAdapter = new TrackAdapter();
         mTrackAdapter.setItemClickListener(this);
         mRecyclerSearchResult.setAdapter(mTrackAdapter);
@@ -61,10 +67,15 @@ public class SearchActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
-        SearchView item = (SearchView) menu.findItem(R.id.item_search).getActionView();
-        item.setIconifiedByDefault(false);
-        item.requestFocus();
-        item.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        SearchView searchView = (SearchView) menu.findItem(R.id.item_search).getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.requestFocus();
+        int id = searchView.getContext()
+                .getResources()
+                .getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) searchView.findViewById(id);
+        textView.setTextColor(getResources().getColor(R.color.color_black));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 return false;

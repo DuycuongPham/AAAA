@@ -1,5 +1,8 @@
 package com.pham.duycuong.soundcloud.screen.home;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import com.pham.duycuong.soundcloud.data.model.Category;
 import com.pham.duycuong.soundcloud.data.model.Track;
 import com.pham.duycuong.soundcloud.data.source.CategoriesDataSource;
@@ -38,7 +41,6 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void onStart() {
-        getCategories();
     }
 
     @Override

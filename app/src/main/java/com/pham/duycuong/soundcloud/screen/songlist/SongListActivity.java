@@ -60,36 +60,8 @@ public class SongListActivity extends BaseActivity implements SongListContract.V
         presenter.getSong();
         initBaseView();
         initMusicService();
-//        initTrackLoader();
     }
 
-//    @NonNull
-//    @Override
-//    public Loader<List<Track>> onCreateLoader(int id, @Nullable Bundle args) {
-//        return new SongLoader(this);
-//    }
-//
-//    @Override
-//    public void onLoadFinished(@NonNull Loader<List<Track>> loader, List<Track> data) {
-//        if (data.size() == 0) {
-//            mRecyclerView.setVisibility(View.GONE);
-//
-//        } else {
-//            mTrackAdapter.setTrackList(data);
-//        }
-//    }
-//
-//    @Override
-//    public void onLoaderReset(@NonNull Loader<List<Track>> loader) {
-//
-//    }
-//
-//    public void initTrackLoader() {
-//        if (getSupportLoaderManager().getLoader(0) != null) {
-//            getSupportLoaderManager().initLoader(0, null, this);
-//        }
-//        getSupportLoaderManager().restartLoader(0, null, this);
-//    }
 
     @Override
     public void onItemClicked(int position) {
@@ -111,5 +83,17 @@ public class SongListActivity extends BaseActivity implements SongListContract.V
     @Override
     public void onDataNotAvailable() {
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackAdapter;
@@ -22,6 +23,7 @@ import com.pham.duycuong.soundcloud.data.source.SongLoader;
 import com.pham.duycuong.soundcloud.screen.download.DownloadActivity;
 import com.pham.duycuong.soundcloud.screen.playlist.PlaylistActivity;
 import com.pham.duycuong.soundcloud.screen.songlist.SongListActivity;
+import com.pham.duycuong.soundcloud.screen.sync.SyncActivity;
 import java.util.List;
 
 /**
@@ -41,25 +43,25 @@ public class PersonalFragment extends Fragment
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_perseonal, container, false);
-        Button btnDownload = view.findViewById(R.id.btnDownload);
-        Button btnPlayList = view.findViewById(R.id.btnPlayList);
-        Button btnSongList = view.findViewById(R.id.btnSongList);
+        LinearLayout layoutSync = view.findViewById(R.id.layoutSync);
+        LinearLayout layoutPlaylist = view.findViewById(R.id.layoutPlaylist);
+        LinearLayout layoutSonglist = view.findViewById(R.id.layoutSongList);
 
-        btnDownload.setOnClickListener(new View.OnClickListener() {
+        layoutSync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), DownloadActivity.class));
+                startActivity(new Intent(getActivity(), SyncActivity.class));
             }
         });
 
-        btnPlayList.setOnClickListener(new View.OnClickListener() {
+        layoutPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), PlaylistActivity.class));
             }
         });
 
-        btnSongList.setOnClickListener(new View.OnClickListener() {
+        layoutSonglist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), SongListActivity.class));

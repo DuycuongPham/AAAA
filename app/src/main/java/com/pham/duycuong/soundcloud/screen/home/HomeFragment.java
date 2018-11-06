@@ -1,5 +1,8 @@
 package com.pham.duycuong.soundcloud.screen.home;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.RecyclerItemClickListener;
 import android.Manifest;
@@ -54,6 +59,9 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
     private CategoryAdapter mCategoryAdapter;
     private HomeContract.Presenter mHomePresenter;
 
+    private TextView mTextViewRetry;
+    private RelativeLayout mLayoutInternet;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -67,7 +75,11 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mTextViewRetry = view.findViewById(R.id.textRetry);
+        mLayoutInternet = view.findViewById(R.id.layoutInternet);
         mRecyclerViewCategories = view.findViewById(R.id.recycler_view);
+
         RecyclerView.LayoutManager layoutManager =
                 new GridLayoutManager(getActivity(), GRID_COLUMN_NUMB);
         EqualSpacingItemDecoration itemDecoration = new EqualSpacingItemDecoration(GRID_SPACE);
@@ -82,8 +94,24 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
                 .getInstance(TracksRemoteDataSource.getInstance(),
                         TracksLocalDataSource.getInstance(new AppExecutors(),
                                 MyDBHelper.getInstance(getActivity()))));
+
         mHomePresenter.setView(this);
-        mHomePresenter.onStart();
+        if(isInternetAvailable()){
+            mHomePresenter.getCategories();
+        }
+        else{
+            mLayoutInternet.setVisibility(View.VISIBLE);
+        }
+
+        mTextViewRetry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isInternetAvailable()){
+                    mHomePresenter.getCategories();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -108,5 +136,12 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
     @Override
     public void onItemLongClick(View view, int position) {
 
+    }
+
+    private boolean isInternetAvailable(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 }
