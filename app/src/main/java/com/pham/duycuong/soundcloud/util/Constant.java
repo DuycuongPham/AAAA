@@ -4,6 +4,8 @@ public class Constant {
 
     public static final String PLAY_LIST = "PLAY_LIST";
     public static final String BUNDLE ="BUNDLE";
+    public static final String FIREBASE_SONG = "song";
+    public static final String FIREBASE_PLAYLIST = "playlist";
 
     private Constant() {
     }
