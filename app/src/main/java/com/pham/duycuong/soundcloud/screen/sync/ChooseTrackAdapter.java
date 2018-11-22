@@ -1,4 +1,5 @@
-package com.pham.duycuong.soundcloud.custom.adapter;
+package com.pham.duycuong.soundcloud.screen.sync;
+
 
 import android.graphics.drawable.AnimationDrawable;
 import android.support.annotation.Nullable;
@@ -23,9 +24,6 @@ public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.
     private List<Track> mTracks;
     private Track mTrack;
     private ChooseTrackClickListener mClickListener;
-    private boolean isDownloading;
-    private boolean isSimple;
-
     public void setItemClickListener(ChooseTrackClickListener itemClickListener) {
         mClickListener = itemClickListener;
     }
@@ -34,11 +32,6 @@ public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.
         mTracks = new ArrayList<>();
     }
 
-    public ChooseTrackAdapter(boolean isDownloading, boolean isSimple) {
-        mTracks = new ArrayList<>();
-        this.isDownloading = isDownloading;
-        this.isSimple = isSimple;
-    }
 
     public List<Track> getTracks() {
         return mTracks;
@@ -57,7 +50,7 @@ public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.
     @Override
     public ChooseTrackAdapter.TrackViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_track_choose, parent, false);
+                .inflate(R.layout.item_track_choose_sync, parent, false);
         return new ChooseTrackAdapter.TrackViewHolder(view);
     }
 
@@ -74,7 +67,6 @@ public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.
     public class TrackViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mTextViewTrack;
-        private ImageView mImageViewTrack;
         private TextView mTextViewArtist;
         private CheckBox mCheckBox;
         private RelativeLayout mRelativeItem;
@@ -83,7 +75,6 @@ public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.
             super(itemView);
             mTextViewTrack = itemView.findViewById(R.id.text_item_track);
             mTextViewArtist = itemView.findViewById(R.id.text_item_artist);
-            mImageViewTrack = itemView.findViewById(R.id.image_item_track);
             mCheckBox = itemView.findViewById(R.id.checkBox);
             mRelativeItem = itemView.findViewById(R.id.relative_track_item);
         }
@@ -105,18 +96,6 @@ public class ChooseTrackAdapter extends RecyclerView.Adapter<ChooseTrackAdapter.
                     }
                 }
             });
-
-            mImageViewTrack.setBackgroundResource(android.R.color.transparent);
-            mImageViewTrack.setImageResource(android.R.color.transparent);
-
-            if (mTrack != null && mTrack.getId() == track.getId()) {
-            } else {
-                Picasso.get()
-                        .load(track.getArtworkUrl())
-                        .error(R.drawable.ic_music)
-                        .placeholder(R.drawable.ic_music)
-                        .into(mImageViewTrack);
-            }
         }
     }
 

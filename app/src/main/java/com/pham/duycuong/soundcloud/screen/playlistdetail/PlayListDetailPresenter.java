@@ -2,6 +2,8 @@ package com.pham.duycuong.soundcloud.screen.playlistdetail;
 
 import com.pham.duycuong.soundcloud.data.model.Playlist;
 import com.pham.duycuong.soundcloud.data.model.Track;
+import com.pham.duycuong.soundcloud.data.source.PlaylistDataSource;
+import com.pham.duycuong.soundcloud.data.source.PlaylistRepository;
 import com.pham.duycuong.soundcloud.data.source.TracksDataSource;
 import com.pham.duycuong.soundcloud.data.source.TracksRepository;
 import java.util.List;
@@ -11,18 +13,21 @@ import java.util.List;
  */
 
 public class PlayListDetailPresenter implements PlayListDetailConstract.Presenter {
-    private static int PAGE=1;
+    private static int PAGE = 1;
     private TracksRepository mTracksRepository;
+    private PlaylistRepository mPlaylistRepository;
     private PlayListDetailConstract.View mView;
 
-    public PlayListDetailPresenter(PlayListDetailConstract.View view, TracksRepository tracksRepository){
+    public PlayListDetailPresenter(PlayListDetailConstract.View view,
+            TracksRepository tracksRepository, PlaylistRepository playlistRepository) {
         mView = view;
-        mTracksRepository=tracksRepository;
+        mTracksRepository = tracksRepository;
+        mPlaylistRepository = playlistRepository;
     }
 
     @Override
     public void setView(PlayListDetailConstract.View view) {
-        mView=view;
+        mView = view;
     }
 
     @Override
@@ -48,5 +53,17 @@ public class PlayListDetailPresenter implements PlayListDetailConstract.Presente
 
             }
         });
+    }
+
+    @Override
+    public void removeTrackFromPlaylist(Track track, Playlist playlist,
+            PlaylistDataSource.PlaylistCallback callback) {
+        mPlaylistRepository.removeTrackFromPlaylist(track, playlist, callback);
+    }
+
+    @Override
+    public void addTrackToPlaylist(Track track, Playlist playlist,
+            PlaylistDataSource.PlaylistCallback callback) {
+        mPlaylistRepository.addTrackToPlaylist(track, playlist, callback);
     }
 }

@@ -5,7 +5,8 @@ import android.content.SharedPreferences;
 
 public class MySharedPreferences {
 
-    private static final String PREF_NAME = "MARKET_RESEARCH_APP";
+    private static final String PREF_NAME = "MUSIC";
+    public static final String USER_NAME = "USER_NAME";
     private SharedPreferences mSharedPreferences;
 
     public MySharedPreferences(Context context) {

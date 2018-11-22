@@ -39,4 +39,8 @@ public interface TracksDataSource {
     void saveTrack(@NonNull Track track, @NonNull SaveTracksCallback callback);
 
     void getDownloadedTracks(@NonNull LoadTracksCallback callback);
+
+    void getTrackHistory(@NonNull LoadTracksCallback callback);
+
+    void saveTrackHistory(@NonNull Track track);
 }

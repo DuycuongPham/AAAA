@@ -29,6 +29,26 @@ public class SongListPresenter implements SongListContract.Presenter {
     }
 
     @Override
+    public void deleteSong(final Track track) {
+        mTracksRepository.deleteTrack(track.getId(), new TracksDataSource.TrackCallback() {
+            @Override
+            public void onSuccess() {
+                mView.onDeleteSongSuccess(track);
+            }
+
+            @Override
+            public void onFail() {
+                mView.onDeleteSongFaile();
+            }
+        });
+    }
+
+    @Override
+    public void saveTrackHistory(Track track) {
+        mTracksRepository.saveTrackHistory(track);
+    }
+
+    @Override
     public void setView(SongListContract.View view) {
         mView = view;
     }

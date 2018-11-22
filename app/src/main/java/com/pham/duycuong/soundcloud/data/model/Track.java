@@ -7,79 +7,117 @@ import com.pham.duycuong.soundcloud.BuildConfig;
 import com.pham.duycuong.soundcloud.util.Constant;
 
 public class Track implements Parcelable {
-    private String mKind;
-    private long mId;
-    private String mCreateAt;
-    private long mDuration;
-    private String mState;
-    private String mTagList;
-    private boolean mDownloadable;
-    private String mGenre;
-    private String mTitle;
-    private String mDescription;
-    private String mLabelName;
-    private String mSteamUrl;
-    private long mUserId;
-    private String mUserName;
-    private String mAvatarUrl;
-    private String mDownloadUrl;
-    private String mArtworkUrl;
-    private boolean mDownloaded;
-    private String mLocalPath;
-    private String mStreamUrlOrigin;
-    private String mDownloadUrlOrigin;
+    private String kind;
+    private long id;
+    private String createAt;
+    private long duration;
+    private String state;
+    private String tagList;
+    private boolean downloadable;
+    private String genre;
+    private String title;
+    private String description;
+    private String labelName;
+    private String steamUrl;
+    private long userId;
+    private String userName;
+    private String avatarUrl;
+    private String downloadUrl;
+    private String artworkUrl;
+    private boolean downloaded;
+    private String localPath;
+    private String streamUrlOrigin;
+    private String downloadUrlOrigin;
+
+    public Track(){
+
+    }
 
     public Track(long id, String path, String title, long duration){
-        mId = id;
-        mLocalPath = path;
-        mTitle = title;
-        mDuration = duration;
+        this.id = id;
+        localPath = path;
+        this.title = title;
+        this.duration = duration;
+    }
+
+    public Track(long id, String title, String userName){
+        this.id = id;
+        this.title = title;
+        this.userName = userName;
+    }
+
+    public Track(String kind, long id, String createAt, long duration, String state, String tagList,
+            boolean downloadable, String genre, String title, String description, String labelName,
+            String steamUrl, long userId, String userName, String avatarUrl, String downloadUrl,
+            String artworkUrl, boolean downloaded, String localPath, String streamUrlOrigin,
+            String downloadUrlOrigin) {
+        this.kind = kind;
+        this.id = id;
+        this.createAt = createAt;
+        this.duration = duration;
+        this.state = state;
+        this.tagList = tagList;
+        this.downloadable = downloadable;
+        this.genre = genre;
+        this.title = title;
+        description = description;
+        this.labelName = labelName;
+        this.steamUrl = steamUrl;
+        this.userId = userId;
+        this.userName = userName;
+        this.avatarUrl = avatarUrl;
+        this.downloadUrl = downloadUrl;
+        this.artworkUrl = artworkUrl;
+        this.downloaded = downloaded;
+        this.localPath = localPath;
+        this.streamUrlOrigin = streamUrlOrigin;
+        this.downloadUrlOrigin = downloadUrlOrigin;
     }
 
     private Track(Builder builder) {
-        mKind = builder.mKind;
-        mId = builder.mId;
-        mCreateAt = builder.mCreateAt;
-        mDuration = builder.mDuration;
-        mState = builder.mState;
-        mTagList = builder.mTagList;
-        mDownloadable = builder.mDownloadable;
-        mGenre = builder.mGenre;
-        mTitle = builder.mTitle;
-        mDescription = builder.mDescription;
-        mLabelName = builder.mLabelName;
-        mSteamUrl = builder.mStreamUrl;
-        mUserId = builder.mUserId;
-        mUserName = builder.mUserName;
-        mAvatarUrl = builder.mAvatarUrl;
-        mDownloadUrl = builder.mDownloadUrl;
-        mArtworkUrl = builder.mArtworkUrl;
-        mDownloaded = builder.mDownloaded;
-        mLocalPath = builder.mLocalPath;
-        mStreamUrlOrigin = builder.mStreamUrlOrigin;
-        mDownloadUrlOrigin = builder.mDownloadUrlOrigin;
+        kind = builder.mKind;
+        id = builder.mId;
+        createAt = builder.mCreateAt;
+        duration = builder.mDuration;
+        state = builder.mState;
+        tagList = builder.mTagList;
+        downloadable = builder.mDownloadable;
+        genre = builder.mGenre;
+        title = builder.mTitle;
+        description = builder.mDescription;
+        labelName = builder.mLabelName;
+        steamUrl = builder.mStreamUrl;
+        userId = builder.mUserId;
+        userName = builder.mUserName;
+        avatarUrl = builder.mAvatarUrl;
+        downloadUrl = builder.mDownloadUrl;
+        artworkUrl = builder.mArtworkUrl;
+        downloaded = builder.mDownloaded;
+        localPath = builder.mLocalPath;
+        streamUrlOrigin = builder.mStreamUrlOrigin;
+        downloadUrlOrigin = builder.mDownloadUrlOrigin;
     }
 
     protected Track(Parcel in) {
-        mKind = in.readString();
-        mId = in.readLong();
-        mCreateAt = in.readString();
-        mDuration = in.readLong();
-        mState = in.readString();
-        mTagList = in.readString();
-        mDownloadable = in.readByte() != 0;
-        mGenre = in.readString();
-        mTitle = in.readString();
-        mDescription = in.readString();
-        mLabelName = in.readString();
-        mSteamUrl = in.readString();
-        mUserId = in.readLong();
-        mUserName = in.readString();
-        mAvatarUrl = in.readString();
-        mDownloadUrl = in.readString();
-        mArtworkUrl = in.readString();
-        mStreamUrlOrigin = in.readString();
-        mDownloadUrlOrigin = in.readString();
+        kind = in.readString();
+        id = in.readLong();
+        createAt = in.readString();
+        duration = in.readLong();
+        state = in.readString();
+        tagList = in.readString();
+        downloadable = in.readByte() != 0;
+        genre = in.readString();
+        title = in.readString();
+        description = in.readString();
+        labelName = in.readString();
+        steamUrl = in.readString();
+        userId = in.readLong();
+        userName = in.readString();
+        avatarUrl = in.readString();
+        downloadUrl = in.readString();
+        artworkUrl = in.readString();
+        streamUrlOrigin = in.readString();
+        downloadUrlOrigin = in.readString();
     }
 
     public static final Creator<Track> CREATOR = new Creator<Track>() {
@@ -101,25 +139,25 @@ public class Track implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mKind);
-        parcel.writeLong(mId);
-        parcel.writeString(mCreateAt);
-        parcel.writeLong(mDuration);
-        parcel.writeString(mState);
-        parcel.writeString(mTagList);
-        parcel.writeByte((byte) (mDownloadable ? 1 : 0));
-        parcel.writeString(mGenre);
-        parcel.writeString(mTitle);
-        parcel.writeString(mDescription);
-        parcel.writeString(mLabelName);
-        parcel.writeString(mSteamUrl);
-        parcel.writeLong(mUserId);
-        parcel.writeString(mUserName);
-        parcel.writeString(mAvatarUrl);
-        parcel.writeString(mDownloadUrl);
-        parcel.writeString(mArtworkUrl);
-        parcel.writeString(mStreamUrlOrigin);
-        parcel.writeString(mDownloadUrlOrigin);
+        parcel.writeString(kind);
+        parcel.writeLong(id);
+        parcel.writeString(createAt);
+        parcel.writeLong(duration);
+        parcel.writeString(state);
+        parcel.writeString(tagList);
+        parcel.writeByte((byte) (downloadable ? 1 : 0));
+        parcel.writeString(genre);
+        parcel.writeString(title);
+        parcel.writeString(description);
+        parcel.writeString(labelName);
+        parcel.writeString(steamUrl);
+        parcel.writeLong(userId);
+        parcel.writeString(userName);
+        parcel.writeString(avatarUrl);
+        parcel.writeString(downloadUrl);
+        parcel.writeString(artworkUrl);
+        parcel.writeString(streamUrlOrigin);
+        parcel.writeString(downloadUrlOrigin);
     }
 
     public static class Builder {
@@ -246,90 +284,90 @@ public class Track implements Parcelable {
     }
 
     public String getKind() {
-        return mKind;
+        return kind;
     }
 
     public long getId() {
-        return mId;
+        return id;
     }
 
     public String getCreateAt() {
-        return mCreateAt;
+        return createAt;
     }
 
     public long getDuration() {
-        return mDuration;
+        return duration;
     }
 
     public String getTagList() {
-        return mTagList;
+        return tagList;
     }
 
     public boolean isDownloadable() {
-        return mDownloadable;
+        return downloadable;
     }
 
     public String getGenre() {
-        return mGenre;
+        return genre;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public String getDescription() {
-        return mDescription;
+        return description;
     }
 
     public String getLabelName() {
-        return mLabelName;
+        return labelName;
     }
 
     public String getSteamUrl() {
-        return mSteamUrl;
+        return steamUrl;
     }
 
     public long getUserId() {
-        return mUserId;
+        return userId;
     }
 
     public String getUserName() {
-        return mUserName;
+        return userName;
     }
 
     public String getAvatarUrl() {
-        return mAvatarUrl;
+        return avatarUrl;
     }
 
     public String getDownloadUrl() {
-        return mDownloadUrl;
+        return downloadUrl;
     }
 
     public String getArtworkUrl() {
-        return mArtworkUrl;
+        return artworkUrl;
     }
 
     public boolean isDownloaded() {
-        return mDownloaded;
+        return downloaded;
     }
 
     public void setDownloaded(boolean downloaded) {
-        mDownloaded = downloaded;
+        this.downloaded = downloaded;
     }
 
     public String getLocalPath() {
-        return mLocalPath;
+        return localPath;
     }
 
     public void setLocalPath(String localPath) {
-        mLocalPath = localPath;
+        this.localPath = localPath;
     }
 
     public String getStreamUrlOrigin() {
-        return mStreamUrlOrigin;
+        return streamUrlOrigin;
     }
 
     public String getDownloadUrlOrigin() {
-        return mDownloadUrlOrigin;
+        return downloadUrlOrigin;
     }
 }

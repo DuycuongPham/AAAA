@@ -11,8 +11,8 @@
         >
         <ImageView
             android:id="@+id/imgDelete"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:src="@drawable/ic_delete"
             />
 
@@ -24,6 +24,7 @@
             android:textColor="#838383"
             android:textSize="@dimen/sp_16"
             android:text="@string/title_delete_playlist"
+            android:layout_marginLeft="@dimen/dp_10"
             />
     </RelativeLayout>
 
@@ -37,7 +38,6 @@
             android:id="@+id/imgRename"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:textSize="@dimen/sp_16"
             android:src="@drawable/ic_edit"
             android:layout_gravity="center"
             />

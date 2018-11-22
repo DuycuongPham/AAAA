@@ -27,9 +27,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.pham.duycuong.soundcloud.R;
+import com.pham.duycuong.soundcloud.util.MySharedPreferences;
 
-public class SigninActivity extends AppCompatActivity implements
-        View.OnClickListener {
+public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -39,8 +39,6 @@ public class SigninActivity extends AppCompatActivity implements
     // [END declare_auth]
 
     private GoogleSignInClient mGoogleSignInClient;
-    private TextView mTextView;
-
     @VisibleForTesting
     public ProgressDialog mProgressDialog;
 
@@ -50,24 +48,23 @@ public class SigninActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_signin);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(Html.fromHtml("<font color='#000000'>"+getString(R.string.title_signin)+" </font>"));
+        actionBar.setTitle(Html.fromHtml(
+                "<font color='#000000'>" + getString(R.string.title_signin) + " </font>"));
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_left);
-        upArrow.setColorFilter(getResources().getColor(R.color.color_black), PorterDuff.Mode.SRC_ATOP);
+        upArrow.setColorFilter(getResources().getColor(R.color.color_black),
+                PorterDuff.Mode.SRC_ATOP);
         actionBar.setHomeAsUpIndicator(upArrow);
 
         // Button listeners
         findViewById(R.id.signinButton).setOnClickListener(this);
-        mTextView = findViewById(R.id.textView);
-
 
         // [START config_signin]
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(
+                        getString(R.string.default_web_client_id)).requestEmail().build();
         // [END config_signin]
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -128,10 +125,16 @@ public class SigninActivity extends AppCompatActivity implements
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+
+                            MySharedPreferences sharedPreferences = new MySharedPreferences(SigninActivity.this);
+                            sharedPreferences.put(MySharedPreferences.USER_NAME, user.getDisplayName());
+
+                            startActivity(new Intent(SigninActivity.this, SyncActivity.class));
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.layout), "Authentication Failed.",
+                                    Snackbar.LENGTH_SHORT).show();
                             updateUI(null);
                         }
 
@@ -155,13 +158,12 @@ public class SigninActivity extends AppCompatActivity implements
         mAuth.signOut();
 
         // Google sign out
-        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
-                });
+        mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                updateUI(null);
+            }
+        });
     }
 
     private void revokeAccess() {
@@ -169,8 +171,8 @@ public class SigninActivity extends AppCompatActivity implements
         mAuth.signOut();
 
         // Google revoke access
-        mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
+        mGoogleSignInClient.revokeAccess()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         updateUI(null);
@@ -181,15 +183,9 @@ public class SigninActivity extends AppCompatActivity implements
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
-            mTextView.setText(user.getEmail());
-
             findViewById(R.id.signinButton).setVisibility(View.GONE);
-//            findViewById(R.id.signOutAndDisconnect).setVisibility(View.VISIBLE);
         } else {
-            mTextView.setText("User null");
-
             findViewById(R.id.signinButton).setVisibility(View.VISIBLE);
-//            findViewById(R.id.signOutAndDisconnect).setVisibility(View.GONE);
         }
     }
 
@@ -211,11 +207,11 @@ public class SigninActivity extends AppCompatActivity implements
         if (i == R.id.signinButton) {
             signIn();
         }
-//        else if (i == R.id.signOutButton) {
-//            signOut();
-//        } else if (i == R.id.disconnectButton) {
-//            revokeAccess();
-//        }
+        //        else if (i == R.id.signOutButton) {
+        //            signOut();
+        //        } else if (i == R.id.disconnectButton) {
+        //            revokeAccess();
+        //        }
     }
 
     public void showProgressDialog() {
@@ -233,5 +229,4 @@ public class SigninActivity extends AppCompatActivity implements
             mProgressDialog.dismiss();
         }
     }
-
 }

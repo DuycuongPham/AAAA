@@ -3,9 +3,10 @@ package com.pham.duycuong.soundcloud.util;
 public class Constant {
 
     public static final String PLAY_LIST = "PLAY_LIST";
-    public static final String BUNDLE ="BUNDLE";
+    public static final String BUNDLE = "BUNDLE";
     public static final String FIREBASE_SONG = "song";
     public static final String FIREBASE_PLAYLIST = "playlist";
+    public static final String FOLDER_NAME = "/MUSIC_CUONG";
 
     private Constant() {
     }
@@ -16,7 +17,8 @@ public class Constant {
         }
 
         public static final String SOUND_CLOUD_GENRE =
-                "https://api.soundcloud.com/tracks?client_id=%s&genre=soundcloud%sgenres%s%s&page=%d";
+                "https://api.soundcloud"
+                        + ".com/tracks?client_id=%s&genre=soundcloud%sgenres%s%s&page=%d";
         public static final String SOUND_CLOUD_SEARCH =
                 "https://api.soundcloud.com/tracks?client_id=%s&q=%s";
         public static final String PARAM_CLIENT = "?client_id=";
@@ -55,7 +57,8 @@ public class Constant {
         private TrackEntry() {
         }
 
-        public static final String TABLE_NAME = "track";
+        public static final String TABLE_TRACK = "track";
+        public static final String TABLE_TRACK_HISTORY= "track_history";
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_KIND = "track_kind";
         public static final String COLUMN_CREATED_AT = "track_created_at";
@@ -97,6 +100,11 @@ public class Constant {
         public static final String COLUMN_ID_PLAYLIST = "playlist_id";
     }
 
+    public class TrackHistoryEntry {
+        public static final String TABLE_NAME = "track_history";
+        public static final String COLUMN_ID_TRACK = "track_id";
+    }
+
     public class SharedConstant {
 
         private SharedConstant() {
@@ -106,5 +114,4 @@ public class Constant {
         public static final String PREF_SHUFFLE_MODE = "PREF_SHUFFLE_MODE";
         public static final String PREF_LOOP_MODE = "PREF_LOOP_MODE";
     }
-
 }

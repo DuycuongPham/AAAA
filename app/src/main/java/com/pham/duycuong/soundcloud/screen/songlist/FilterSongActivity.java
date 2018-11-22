@@ -1,7 +1,6 @@
 package com.pham.duycuong.soundcloud.screen.songlist;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.FilterTrackAdapter;
-import com.pham.duycuong.soundcloud.custom.adapter.TrackAdapter;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackClickListener;
 import com.pham.duycuong.soundcloud.custom.dialog.DetailBottomSheetFragment;
 import com.pham.duycuong.soundcloud.custom.dialog.DetailBottomSheetListener;
@@ -32,11 +30,11 @@ import com.pham.duycuong.soundcloud.screen.BaseActivity;
 import com.pham.duycuong.soundcloud.util.AppExecutors;
 import java.util.List;
 
-public class SongListActivity extends BaseActivity
+public class FilterSongActivity extends BaseActivity
         implements SongListContract.View, DetailBottomSheetListener, TrackClickListener {
 
     private RecyclerView mRecyclerView;
-    private TrackAdapter mTrackAdapter;
+    private FilterTrackAdapter mTrackAdapter;
     private SearchView mSearchView;
     private DetailBottomSheetFragment mBottomSheetFragment;
     private TextView mTextViewNotSongAvailable;
@@ -65,7 +63,7 @@ public class SongListActivity extends BaseActivity
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        mTrackAdapter = new TrackAdapter();
+        mTrackAdapter = new FilterTrackAdapter();
         mTrackAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mTrackAdapter);
 
@@ -83,6 +81,26 @@ public class SongListActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.item_search).getActionView();
+        searchView.setIconifiedByDefault(false);
+        int id = searchView.getContext()
+                .getResources()
+                .getIdentifier("android:id/search_src_text", null, null);
+        TextView textView = (TextView) searchView.findViewById(id);
+        textView.setTextColor(getResources().getColor(R.color.color_black));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mTrackAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                mTrackAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -90,11 +108,12 @@ public class SongListActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_search:
-                startActivity(new Intent(SongListActivity.this, FilterSongActivity.class));
+
                 break;
             default:
                 break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -119,7 +138,7 @@ public class SongListActivity extends BaseActivity
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                mTrackAdapter.setTrackList(tracks);
+                mTrackAdapter.setTrackListFilter(tracks);
             }
         };
         mHandler.post(runnable);
@@ -144,6 +163,7 @@ public class SongListActivity extends BaseActivity
             public void run() {
                 int index = mTrackAdapter.getTrackList().indexOf(track);
                 mTrackAdapter.deleteTrack(index);
+                mTrackAdapter.notifyItemRemoved(index);
             }
         };
         mHandler.post(runnable);
@@ -154,7 +174,7 @@ public class SongListActivity extends BaseActivity
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(SongListActivity.this, getString(R.string.msg_delete_track_failed),
+                Toast.makeText(FilterSongActivity.this, getString(R.string.msg_delete_track_failed),
                         Toast.LENGTH_SHORT).show();
             }
         };
@@ -197,9 +217,6 @@ public class SongListActivity extends BaseActivity
 
     @Override
     public void onPlay(Track track) {
-        if (mMusicService != null) {
-            mMusicService.handleNewTrack(track);
-            mPresenter.saveTrackHistory(track);
-        }
+
     }
 }

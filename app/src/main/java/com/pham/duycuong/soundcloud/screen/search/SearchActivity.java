@@ -6,8 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.widget.EditText;
-import android.widget.SearchView;
 
+import android.widget.SearchView;
 import android.widget.TextView;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackAdapter;

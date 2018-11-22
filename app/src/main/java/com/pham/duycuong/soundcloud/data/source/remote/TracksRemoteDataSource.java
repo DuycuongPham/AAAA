@@ -60,4 +60,13 @@ public class TracksRemoteDataSource implements TracksDataSource {
         //not supported
     }
 
+    @Override
+    public void getTrackHistory(@NonNull LoadTracksCallback callback) {
+        //do nothing
+    }
+
+    @Override
+    public void saveTrackHistory(@NonNull Track track) {
+        //do nothing
+    }
 }

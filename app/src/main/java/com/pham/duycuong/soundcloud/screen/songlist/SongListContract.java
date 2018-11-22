@@ -10,9 +10,13 @@ public class SongListContract {
     interface View extends MusicServiceObserver {
         void displaySong(List<Track> tracks);
         void onDataNotAvailable();
+        void onDeleteSongSuccess(Track track);
+        void onDeleteSongFaile();
     }
 
     interface Presenter extends BasePresenter<SongListContract.View> {
         void getSong();
+        void deleteSong(Track track);
+        void saveTrackHistory(Track track);
     }
 }

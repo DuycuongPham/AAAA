@@ -1,23 +1,27 @@
 package com.pham.duycuong.soundcloud.screen.playlistdetail;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackAdapter;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackClickListener;
 import com.pham.duycuong.soundcloud.data.model.Playlist;
 import com.pham.duycuong.soundcloud.data.model.Track;
+import com.pham.duycuong.soundcloud.data.source.PlaylistDataSource;
 import com.pham.duycuong.soundcloud.data.source.PlaylistRepository;
 import com.pham.duycuong.soundcloud.data.source.TracksRepository;
 import com.pham.duycuong.soundcloud.data.source.local.MyDBHelper;
@@ -31,11 +35,10 @@ import com.pham.duycuong.soundcloud.util.AppExecutors;
 import com.pham.duycuong.soundcloud.util.Constant;
 import java.util.List;
 
-public class PlayListDetailActivity extends BaseActivity implements PlayListDetailConstract.View,
-        TrackClickListener {
+public class PlayListDetailActivity extends BaseActivity
+        implements PlayListDetailConstract.View, TrackClickListener {
 
     private static final String ARGUMENT_PLAYLIST = "ARGUMENT_PLAYLIST";
-
 
     private PlayListDetailConstract.Presenter mPresenter;
     private TrackAdapter mTrackAdapter;
@@ -43,16 +46,17 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
     private ActionBar mActionBar;
     private Playlist mPlaylist;
     private TextView mTextView;
+    private List<Track> mTrackList;
 
-    public static void newInstance(Activity activity, Playlist playlist){
+    private boolean mResave = false;
+
+    public static void newInstance(Activity activity, Playlist playlist) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_PLAYLIST, playlist);
         Intent intent = new Intent(activity, PlayListDetailActivity.class);
         intent.putExtras(bundle);
         activity.startActivity(intent);
     }
-
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,23 +66,29 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
 
         mActionBar = getSupportActionBar();
         mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setTitle(Html.fromHtml(
-                "<font color='#000000'>" + mPlaylist.getName() + " </font>"));
+        mActionBar.setTitle(
+                Html.fromHtml("<font color='#000000'>" + mPlaylist.getName() + " </font>"));
 
         final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_left);
-        upArrow.setColorFilter(getResources().getColor(R.color.color_black), PorterDuff.Mode.SRC_ATOP);
+        upArrow.setColorFilter(getResources().getColor(R.color.color_black),
+                PorterDuff.Mode.SRC_ATOP);
         mActionBar.setHomeAsUpIndicator(upArrow);
 
         mTextView = findViewById(R.id.textView);
 
         mHandler = new Handler();
 
-        TracksRepository mTracksRepository = TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
-        TracksLocalDataSource.getInstance(new AppExecutors(),
-                MyDBHelper.getInstance(this)));
+        TracksRepository mTracksRepository =
+                TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
+                        TracksLocalDataSource.getInstance(new AppExecutors(),
+                                MyDBHelper.getInstance(this)));
 
-        mPresenter = new PlayListDetailPresenter(this, mTracksRepository);
-        RecyclerView recyclerView=findViewById(R.id.recyclerView);
+        PlaylistRepository playlistRepository = PlaylistRepository.getInstance(
+                PlaylistLocalDataSource.getInstance(new AppExecutors(),
+                        MyDBHelper.getInstance(this)));
+
+        mPresenter = new PlayListDetailPresenter(this, mTracksRepository, playlistRepository);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         mTrackAdapter = new TrackAdapter(false, true);
         mTrackAdapter.setItemClickListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -96,8 +106,9 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
                         ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
                     @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                            RecyclerView.ViewHolder target) {
+                    public boolean onMove(RecyclerView recyclerView,
+                            RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        mResave = true;
                         moveTrack(viewHolder.getAdapterPosition(), target.getAdapterPosition());
                         return true;
                     }
@@ -128,7 +139,39 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
     }
 
     @Override
-    public void onItemOption(Track track) {
+    public void onItemOption(final Track track) {
+        new AlertDialog.Builder(this).setTitle(getString(R.string.title_delete_song))
+                .setMessage(
+                        getString(R.string.msg_delete_song) + " " + track.getTitle() + getString(
+                                R.string.msg_from_playlist) + " " + mPlaylist.getName())
+                .setPositiveButton(getString(R.string.title_delete),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mPresenter.removeTrackFromPlaylist(track, mPlaylist,
+                                        new PlaylistDataSource.PlaylistCallback() {
+                                            @Override
+                                            public void onSuccess() {
+                                                Toast.makeText(PlayListDetailActivity.this,
+                                                        getString(R.string.msg_delete_success),
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            @Override
+                                            public void onFail() {
+                                            }
+                                        });
+                            }
+                        })
+                .setNegativeButton(getString(R.string.title_cancel),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                .create()
+                .show();
     }
 
     @Override
@@ -136,20 +179,19 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if(tracks!=null){
+                if (tracks != null) {
+                    mTrackList = tracks;
                     mTextView.setVisibility(View.INVISIBLE);
                     mTrackAdapter.setTrackList(tracks);
                     mActionBar.setSubtitle(Html.fromHtml(
-                            "<font color='#000000'>" + tracks.size() + " " + getString(R.string.title_song)+ " </font>"));
-                }
-                else{
+                            "<font color='#000000'>" + tracks.size() + " " + getString(
+                                    R.string.title_song) + " </font>"));
+                } else {
                     mTextView.setVisibility(View.VISIBLE);
                 }
             }
         };
         mHandler.post(runnable);
-
-
     }
 
     @Override
@@ -162,11 +204,6 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
     protected void onResume() {
         super.onResume();
         mPresenter.getTracks(mPlaylist);
-
-//        if (mMusicService != null) {
-//            mMusicService.register(mTrackAdapter);
-//        }
-
     }
 
     @Override
@@ -184,7 +221,38 @@ public class PlayListDetailActivity extends BaseActivity implements PlayListDeta
         return super.onSupportNavigateUp();
     }
 
-    public void onClickFloatButton(View view){
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mResave) {
+            PlaylistDataSource.PlaylistCallback callback =
+                    new PlaylistDataSource.PlaylistCallback() {
+                        @Override
+                        public void onSuccess() {
+                        }
+
+                        @Override
+                        public void onFail() {
+                        }
+                    };
+
+            for (Track track : mTrackList) {
+                mPresenter.removeTrackFromPlaylist(track, mPlaylist, callback);
+            }
+
+            for (Track track : mTrackList) {
+                mPresenter.addTrackToPlaylist(track, mPlaylist, callback);
+            }
+        }
+        super.onDestroy();
+    }
+
+    public void onClickFloatButton(View view) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(Constant.PLAY_LIST, mPlaylist);
         Intent intent = new Intent(this, ChooseTrackActivity.class);

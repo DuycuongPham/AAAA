@@ -16,7 +16,11 @@ public interface TracksDao {
 
     void insertTrack(Track track);
 
+    void insertTrackHistory(Track track);
+
     int deleteTrackById(long trackId);
 
     void deleteTracks();
+
+    List<Track> getTrackHistory();
 }

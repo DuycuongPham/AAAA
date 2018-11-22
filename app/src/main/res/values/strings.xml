@@ -36,8 +36,8 @@
     <string name="title_personal">CÁ NHÂN</string>
     <string name="title_online">ONLINE</string>
     <string name="title_offline">CÁ NHÂN</string>
-    <string name="title_dongbo">Đồng bộ</string>
-    <string name="title_dongbo2">ĐỒNG BỘ</string>
+    <string name="title_sync">Đồng bộ</string>
+    <string name="title_sync2">ĐỒNG BỘ</string>
     <string name="title_song">bài hát</string>
     <string name="title_complete">Xong</string>
     <string name="title_list_song">Danh sách bài hát</string>
@@ -50,10 +50,23 @@
     <string name="title_delete_playlist">Xóa Playlist</string>
     <string name="title_rename_playlist">Đổi tên Playlist</string>
     <string name="msg_delete_playlist">Bạn có muốn xóa playlist</string>
+    <string name="msg_delete_song">Bạn có muốn xóa bài hát</string>
+    <string name="msg_delete_success">Xóa thành công</string>
+    <string name="msg_from_playlist">khỏi Playlist</string>
     <string name="title_internet_not_available">Không có kết nối Internet</string>
     <string name="title_retry">THỬ LẠI</string>
     <string name="title_signin">Đăng nhập</string>
     <string name="title_song2">Bài hát</string>
     <string name="msg_sigin_activity">Để thực hiện chức năng đồng bộ, bạn cần phải đăng nhập tài khoản Google</string>
-
+    <string name="msg_checking_sync">Đang kiểm tra...</string>
+    <string name="msg_syncing">Đang đồng bộ...</string>
+    <string name="title_song_not_on_device">Chưa được tải xuống</string>
+    <string name="title_song_not_on_cloud">Chưa được tải lên</string>
+    <string name="msg_sync_upload_song">Tải lên: </string>
+    <string name="msg_sync_download_song">Tải xuống: </string>
+    <string name="msg_delete_track_failed">Xóa bài hát thất bại!</string>
+    <string name="msg_not_choose_song">Chưa có bài hát nào được chọn!</string>
+    <string name="title_delete_song">Xóa bài hát</string>
+    <string name="title_choose_all">Chọn tất cả</string>
+    <string name="title_track_history">LỊCH SỬ NGHE NHẠC</string>
 </resources>

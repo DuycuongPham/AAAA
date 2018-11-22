@@ -298,7 +298,7 @@ public class DetailBottomSheetFragment extends BottomSheetDialogFragment
                 }
                 break;
             case R.id.text_create_playlist:
- //               showCreatePlaylist();
+//                showCreatePlaylist();
                 break;
             case R.id.text_delete:
                 if (mDetailBottomSheetListener != null) {

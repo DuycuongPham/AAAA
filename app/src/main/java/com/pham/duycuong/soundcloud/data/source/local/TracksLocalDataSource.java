@@ -122,4 +122,31 @@ public class TracksLocalDataSource implements TracksDataSource {
         };
         mAppExecutors.diskIO().execute(runnable);
     }
+
+    @Override
+    public void getTrackHistory(@NonNull final LoadTracksCallback callback) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                List<Track> tracks = mTracksDao.getTrackHistory();
+                if (tracks.isEmpty()) {
+                    callback.onDataNotAvailable();
+                } else {
+                    callback.onTracksLoaded(tracks);
+                }
+            }
+        };
+        mAppExecutors.diskIO().execute(runnable);
+    }
+
+    @Override
+    public void saveTrackHistory(@NonNull final Track track) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                mTracksDao.insertTrackHistory(track);
+            }
+        };
+        mAppExecutors.diskIO().execute(runnable);
+    }
 }

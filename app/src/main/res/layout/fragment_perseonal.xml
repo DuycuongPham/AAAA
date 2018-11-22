@@ -4,106 +4,139 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:focusableInTouchMode="true"
     tools:context="com.pham.duycuong.soundcloud.screen.personal.PersonalFragment"
     >
-
-    <LinearLayout
-        android:id="@+id/layoutUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="#961f70"
-        android:padding="@dimen/dp_10"
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         >
-        <ImageView
-            android:layout_width="@dimen/icon_size_img"
-            android:layout_height="@dimen/icon_size_img"
-            android:src="@drawable/ic_user"
-            android:layout_marginRight="@dimen/dp_20"
-
-            />
-        <TextView
-            android:id="@+id/textUser"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:id="@+id/layoutUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Cuong Pham"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/color_black"
-            android:layout_gravity="center"
-            />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:background="#961f70"
+            android:padding="@dimen/dp_10"
+            >
+            <ImageView
+                android:layout_width="@dimen/icon_size_img"
+                android:layout_height="@dimen/icon_size_img"
+                android:src="@drawable/ic_user"
+                android:layout_marginRight="@dimen/dp_20"
 
-
-    <LinearLayout
-        android:id="@+id/layoutSync"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        >
-        <ImageView
-            android:layout_width="@dimen/icon_size_img"
-            android:layout_height="@dimen/icon_size_img"
-            android:src="@drawable/ic_cloud_sync"
-            android:layout_marginRight="@dimen/dp_20"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_dongbo"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/color_black"
-            android:layout_gravity="center"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutPlaylist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        >
-        <ImageView
-            android:layout_width="@dimen/icon_size_img"
-            android:layout_height="@dimen/icon_size_img"
-            android:src="@drawable/ic_play_list"
-            android:layout_marginRight="@dimen/dp_20"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_playlist"
-            android:textSize="@dimen/sp_20"
-            android:textColor="@color/color_black"
-            android:layout_gravity="center"
-            />
+                />
+            <TextView
+                android:id="@+id/textUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cuong Pham"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/color_black"
+                android:layout_gravity="center"
+                />
         </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layoutSongList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        >
-        <ImageView
-            android:layout_width="@dimen/icon_size_img"
-            android:layout_height="@dimen/icon_size_img"
-            android:src="@drawable/ic_song_list"
-            android:layout_marginRight="@dimen/dp_20"
-            />
-        <TextView
+
+        <LinearLayout
+            android:id="@+id/layoutSync"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/title_list_song"
-            android:textSize="@dimen/sp_20"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            >
+            <ImageView
+                android:layout_width="@dimen/icon_size_img"
+                android:layout_height="@dimen/icon_size_img"
+                android:src="@drawable/ic_cloud_sync"
+                android:layout_marginRight="@dimen/dp_20"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_sync"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/color_black"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutPlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            >
+            <ImageView
+                android:layout_width="@dimen/icon_size_img"
+                android:layout_height="@dimen/icon_size_img"
+                android:src="@drawable/ic_play_list"
+                android:layout_marginRight="@dimen/dp_20"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_playlist"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/color_black"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutSongList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            >
+            <ImageView
+                android:layout_width="@dimen/icon_size_img"
+                android:layout_height="@dimen/icon_size_img"
+                android:src="@drawable/ic_song_list"
+                android:layout_marginRight="@dimen/dp_20"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_list_song"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/color_black"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:text="@string/title_track_history"
+            android:textSize="@dimen/dp_20"
             android:textColor="@color/color_black"
-            android:layout_gravity="center"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewTrackHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_5"
             />
     </LinearLayout>
+    </ScrollView>
+
+
 
 </LinearLayout>

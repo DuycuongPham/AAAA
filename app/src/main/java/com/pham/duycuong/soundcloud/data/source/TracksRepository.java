@@ -61,4 +61,14 @@ public class TracksRepository implements TracksDataSource {
     public void getDownloadedTracks(@NonNull LoadTracksCallback callback) {
         mTracksLocalDataSource.getDownloadedTracks(callback);
     }
+
+    @Override
+    public void getTrackHistory(@NonNull LoadTracksCallback callback) {
+        mTracksLocalDataSource.getTrackHistory(callback);
+    }
+
+    @Override
+    public void saveTrackHistory(@NonNull Track track) {
+        mTracksLocalDataSource.saveTrackHistory(track);
+    }
 }

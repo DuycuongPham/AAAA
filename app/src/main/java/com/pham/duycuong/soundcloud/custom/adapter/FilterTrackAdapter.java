@@ -20,11 +20,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrackAdapter
-        extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder>
-        implements MusicServiceObserver {
+public class FilterTrackAdapter
+        extends RecyclerView.Adapter<FilterTrackAdapter.TrackViewHolder>
+        implements MusicServiceObserver, Filterable {
 
     private List<Track> mTrackList;
+    private List<Track> mTrackListFilter;
     private Track mTrack;
     private @PlayState
     int mPlayState;
@@ -32,17 +33,19 @@ public class TrackAdapter
     private boolean mIsDownloading;
     private boolean mIsSimple;
     private boolean mIsNotAction;
+    private boolean mIsFilter;
 
     public void setItemClickListener(TrackClickListener itemClickListener) {
         mItemClickListener = itemClickListener;
     }
 
-    public TrackAdapter() {
+    public FilterTrackAdapter() {
         mTrackList = new ArrayList<>();
+        mTrackListFilter = new ArrayList<>();
         mPlayState = PlayState.PAUSED;
     }
 
-    public TrackAdapter(boolean isDownloading, boolean isSimple) {
+    public FilterTrackAdapter(boolean isDownloading, boolean isSimple) {
         mTrackList = new ArrayList<>();
         this.mIsDownloading = isDownloading;
         this.mIsSimple = isSimple;
@@ -55,6 +58,12 @@ public class TrackAdapter
 
     public void setTrackList(List<Track> trackList) {
         mTrackList = trackList;
+        notifyDataSetChanged();
+    }
+
+    public  void setTrackListFilter(List<Track> tracks){
+        mTrackListFilter = tracks;
+        mTrackList = tracks;
         notifyDataSetChanged();
     }
 
@@ -78,27 +87,25 @@ public class TrackAdapter
 
     public void deleteTrack(int pos){
         mTrackList.remove(pos);
-//        notifyItemRemoved(pos);
-        notifyDataSetChanged();
     }
 
     @Override
-    public TrackAdapter.TrackViewHolder onCreateViewHolder(ViewGroup parent,
-                                                           int viewType) {
+    public FilterTrackAdapter.TrackViewHolder onCreateViewHolder(ViewGroup parent,
+            int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.item_track, parent, false);
-        return new TrackAdapter.TrackViewHolder(view);
+        return new FilterTrackAdapter.TrackViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(TrackAdapter.TrackViewHolder holder, int position) {
-        holder.bindView(mTrackList.get(position), position);
+    public void onBindViewHolder(FilterTrackAdapter.TrackViewHolder holder, int position) {
+        holder.bindView(mTrackListFilter.get(position), position);
     }
 
     @Override
     public int getItemCount() {
-            return mTrackList == null ? 0 : mTrackList.size();
+            return mTrackListFilter == null ? 0 : mTrackListFilter.size();
     }
 
     @Override
@@ -135,9 +142,43 @@ public class TrackAdapter
 
     @Override
     public void updateFirstTime(int loopMode, int shuffleMode, long progress, long duration,
-                                @Nullable Track track, ArrayList<Track> tracks, int playState) {
+            @Nullable Track track, ArrayList<Track> tracks, int playState) {
         updateTrack(track);
         updateState(playState);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    mTrackListFilter = mTrackList;
+                } else {
+                    List<Track> filteredList = new ArrayList<>();
+                    for (Track track : mTrackList) {
+
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (track.getTitle().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(track);
+                        }
+                    }
+                    mTrackListFilter = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mTrackListFilter;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                mTrackListFilter = (ArrayList<Track>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public class TrackViewHolder extends RecyclerView.ViewHolder {
@@ -215,8 +256,5 @@ public class TrackAdapter
                         .into(mImageViewTrack);
             }
         }
-    }
-    public void setNotAction(){
-        mIsNotAction = true;
     }
 }
