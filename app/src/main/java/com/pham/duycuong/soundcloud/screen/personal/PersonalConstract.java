@@ -12,6 +12,5 @@ public class PersonalConstract {
 
     interface Presenter extends BasePresenter<View> {
         void getTrackHistory();
-
     }
 }

@@ -24,16 +24,16 @@ import com.pham.duycuong.soundcloud.screen.MyBroadcastReceiver;
 import com.pham.duycuong.soundcloud.screen.MyNotification;
 import com.pham.duycuong.soundcloud.util.Constant;
 
+import com.pham.duycuong.soundcloud.util.UsefulFunc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class MusicService extends Service
-        implements MusicServiceObservable, MediaPlayer.OnPreparedListener,
-        MediaPlayer.OnErrorListener {
+        implements MusicServiceObservable, MediaPlayer.OnPreparedListener {
 
-    private static final int CHECK_MEDIA_DELAY = 100; /* time delay when check media's progress*/
+    private static final int CHECK_MEDIA_DELAY = 1000; /* time delay when check media's progress*/
     private static final int SERVICE_ID = 10;
     private static final String SEPARATE = "/";
     private static MusicService sInstance;
@@ -129,11 +129,11 @@ public class MusicService extends Service
         IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
         MyBroadcastReceiver handler = new MyBroadcastReceiver();
         registerReceiver(handler, filter);
-        AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        if (manager != null) {
-            manager.registerMediaButtonEventReceiver(
-                    new ComponentName(this, MyBroadcastReceiver.class));
-        }
+//        AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//        if (manager != null) {
+//            manager.registerMediaButtonEventReceiver(
+//                    new ComponentName(this, MyBroadcastReceiver.class));
+//        }
     }
 
     private void saveSetting(Setting setting) {
@@ -400,7 +400,6 @@ public class MusicService extends Service
                 mPlayState = PlayState.PREPARING;
                 notifyStateChanged();
                 mMediaPlayer.setOnPreparedListener(MusicService.this);
-                mMediaPlayer.setOnErrorListener(this);
                 mMediaPlayer.prepareAsync();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -465,21 +464,6 @@ public class MusicService extends Service
             }
         });
         notifyStateChanged();
-    }
-
-    @Override
-    public boolean onError(MediaPlayer mp, int what, int extra) {
-//        int i = 2;
-//        Log.d("kkkk", "onError: sv");
-//        mp.reset();
-//
-//        try {
-//            mp.setDataSource(mTrackUrl);
-//            mp.prepareAsync();
-//        } catch (Exception e) {
-//            Log.d("xxxx", "onError: " + e);
-//        }
-        return true;
     }
 
     @Override

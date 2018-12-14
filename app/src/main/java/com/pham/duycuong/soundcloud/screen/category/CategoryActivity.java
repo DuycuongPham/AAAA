@@ -59,6 +59,7 @@ public class CategoryActivity extends BaseActivity
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
         mMusicService = MusicService.getInstance();
         mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView = findViewById(R.id.recycler_view_items);
         mTrackAdapter = new TrackAdapter();
         mTrackAdapter.setItemClickListener(this);
@@ -109,6 +110,7 @@ public class CategoryActivity extends BaseActivity
 
     @Override
     public void showTracks(List<Track> tracks) {
+        mProgressBar.setVisibility(View.GONE);
         if (tracks != null) {
             for (Track track : tracks) {
                 mTrackAdapter.appendItem(track);
@@ -125,16 +127,17 @@ public class CategoryActivity extends BaseActivity
     @Override
     public void onItemClicked(int position) {
         if (mMusicService != null) {
+            Track track = mTrackAdapter.getTrackList().get(position);
             mMusicService.handleNewTrack(mTrackAdapter.getTrackList(), position, false);
+            mPresenter.saveTrackHistory(track);
         }
     }
 
     @Override
     public void onItemOption(Track track) {
-        mPresenter.download(track);
-        DetailBottomSheetFragment fragment =
-                DetailBottomSheetFragment.newInstance(track, false, false);
+        DetailBottomSheetFragment fragment = DetailBottomSheetFragment.newInstance2(track);
         fragment.setDetailBottomSheetListener(this);
+        fragment.setShowAddPlaylist(false);
         fragment.show(getSupportFragmentManager(), fragment.getTag());
     }
 

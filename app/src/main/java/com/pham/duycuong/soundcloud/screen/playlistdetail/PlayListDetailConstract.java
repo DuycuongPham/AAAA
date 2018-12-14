@@ -17,6 +17,7 @@ public interface PlayListDetailConstract {
 
     interface Presenter extends BasePresenter<View>{
         void getTracks(Playlist playlist);
+        void saveTrackHisoty(Track track);
         void removeTrackFromPlaylist(Track track, Playlist playlist, PlaylistDataSource.PlaylistCallback callback);
         void addTrackToPlaylist(Track track, Playlist playlist, PlaylistDataSource.PlaylistCallback callback);
     }

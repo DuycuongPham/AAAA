@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/color_white"
-    android:gravity="center"
-    android:orientation="horizontal"
     android:weightSum="1">
 
     <ImageView
@@ -14,27 +12,22 @@
         android:layout_height="@dimen/sub_controller_height"
         android:src="@drawable/ic_music"
         tools:ignore="ContentDescription" />
-    <TextView
-        android:id="@+id/text_notification_trak"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/text_notification_user"
-        android:text="Co gai hom qua"
-        android:textSize="@dimen/notification_title_size"
-         />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_toRightOf="@+id/image_notification_track"
+        android:layout_toLeftOf="@+id/llController"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/dp_10"
         >
-
         <TextView
             android:id="@+id/text_notification_track"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
             android:layout_above="@+id/text_notification_user"
-            android:text="Co gai hom qua"
+            android:textColor="@color/color_black"
             android:textSize="@dimen/notification_title_size"
             android:maxLines="1" />
 
@@ -42,30 +35,42 @@
             android:id="@+id/text_notification_user"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:text="My Tam"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:textColor="@color/color_black"
             android:maxLines="1" />
-    </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/llController"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        >
+        <ImageView
+            android:id="@+id/image_notification_previous"
+            android:layout_width="@dimen/sub_controller_button_height_small"
+            android:layout_height="@dimen/sub_controller_button_height_small"
+            android:background="@drawable/ic_skip_previous"
+            tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/image_notification_previous"
-        android:layout_width="@dimen/sub_controller_button_height_small"
-        android:layout_height="@dimen/sub_controller_button_height_small"
-        android:background="@drawable/ic_skip_previous"
-        tools:ignore="ContentDescription" />
+        <ImageView
+            android:id="@+id/image_notification_play"
+            android:layout_width="@dimen/sub_controller_button_height"
+            android:layout_height="@dimen/sub_controller_button_height"
+            android:src="@drawable/ic_play_arrow"
+            tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/image_notification_play"
-        android:layout_width="@dimen/sub_controller_button_height"
-        android:layout_height="@dimen/sub_controller_button_height"
-        android:src="@drawable/ic_play_arrow"
-        tools:ignore="ContentDescription" />
+        <ImageView
+            android:id="@+id/image_notification_next"
+            android:layout_width="@dimen/sub_controller_button_height_small"
+            android:layout_height="@dimen/sub_controller_button_height_small"
+            android:background="@drawable/ic_skip_next"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
 
-    <ImageView
-        android:id="@+id/image_notification_next"
-        android:layout_width="@dimen/sub_controller_button_height_small"
-        android:layout_height="@dimen/sub_controller_button_height_small"
-        android:background="@drawable/ic_skip_next"
-        tools:ignore="ContentDescription" />
-</LinearLayout>
+
+</RelativeLayout>

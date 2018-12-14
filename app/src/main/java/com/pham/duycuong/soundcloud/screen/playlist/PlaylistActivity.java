@@ -37,6 +37,7 @@ import com.pham.duycuong.soundcloud.screen.choose_track.ChooseTrackActivity;
 import com.pham.duycuong.soundcloud.screen.playlistdetail.PlayListDetailActivity;
 import com.pham.duycuong.soundcloud.util.AppExecutors;
 
+import com.pham.duycuong.soundcloud.util.Constant;
 import java.util.List;
 
 public class PlaylistActivity extends BaseActivity
@@ -139,15 +140,20 @@ public class PlaylistActivity extends BaseActivity
 
     public void onClickFloatButton(View view) {
         new CreatePlaylistDialog(this, mPlaylistRepository,
-                new PlaylistDataSource.PlaylistCallback() {
+                new PlaylistDataSource.CreateDialogCallback() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(final Playlist playlist) {
                         Runnable runnable = new Runnable() {
                             @Override
                             public void run() {
                                 Toast.makeText(PlaylistActivity.this, getString(R.string.msg_saved),
                                         Toast.LENGTH_SHORT).show();
                                 mPresenter.getPlaylist();
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable(Constant.PLAY_LIST, playlist);
+                                Intent intent = new Intent(PlaylistActivity.this, ChooseTrackActivity.class);
+                                intent.putExtra(Constant.BUNDLE, bundle);
+                                startActivity(intent);
                             }
                         };
                         mHandler.post(runnable);

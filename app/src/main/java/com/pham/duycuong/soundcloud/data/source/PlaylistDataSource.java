@@ -20,9 +20,17 @@ public interface PlaylistDataSource {
         void onFail();
     }
 
+    interface CreateDialogCallback {
+        void onSuccess(Playlist playlist);
+
+        void onFail();
+    }
+
     void getPlaylist(@NonNull LoadPlaylistCallback callback);
 
     void savePlaylist(@NonNull Playlist playlist, @NonNull PlaylistCallback callback);
+
+    void savePlaylist(@NonNull Playlist playlist, @NonNull CreateDialogCallback callback);
 
     void deleteList(@NonNull Playlist playlist, @NonNull PlaylistCallback callback);
 

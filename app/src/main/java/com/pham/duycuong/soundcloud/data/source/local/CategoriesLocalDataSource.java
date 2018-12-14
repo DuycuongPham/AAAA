@@ -31,25 +31,11 @@ public class CategoriesLocalDataSource implements CategoriesDataSource {
         mCategories.add(new Category(Genre.CLASSICAL));
         mCategories.add(new Category(Genre.COUNTRY));
         mCategories.add(new Category(Genre.DANCE_EDM));
-        mCategories.add(new Category(Genre.DANCEHALL));
-        mCategories.add(new Category(Genre.DEEP_HOUSE));
         mCategories.add(new Category(Genre.DISCO));
         mCategories.add(new Category(Genre.DRUM_BASS));
-        mCategories.add(new Category(Genre.DUBSTEP));
-        mCategories.add(new Category(Genre.ELECTRONIC));
-        mCategories.add(new Category(Genre.INDIE));
-        mCategories.add(new Category(Genre.HOUSE));
-        mCategories.add(new Category(Genre.METAL));
         mCategories.add(new Category(Genre.PIANO));
         mCategories.add(new Category(Genre.POP));
         mCategories.add(new Category(Genre.ROCK));
-        mCategories.add(new Category(Genre.TRAP));
-        mCategories.add(new Category(Genre.AUDIOBOOKS));
-        mCategories.add(new Category(Genre.COMEDY));
-        mCategories.add(new Category(Genre.LEARNING));
-        mCategories.add(new Category(Genre.SCIENCE));
-        mCategories.add(new Category(Genre.SPORTS));
-        mCategories.add(new Category(Genre.TECHNOLOGY));
         callback.onCategoriesLoaded(mCategories);
     }
 }

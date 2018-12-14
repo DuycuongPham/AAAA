@@ -29,8 +29,6 @@ import com.pham.duycuong.soundcloud.data.model.PlayState;
 import com.pham.duycuong.soundcloud.data.model.Track;
 import com.pham.duycuong.soundcloud.data.source.setting.LoopMode;
 import com.pham.duycuong.soundcloud.data.source.setting.ShuffleMode;
-import com.pham.duycuong.soundcloud.screen.download.DownloadActivity;
-import com.pham.duycuong.soundcloud.screen.playlist.PlaylistActivity;
 import com.pham.duycuong.soundcloud.screen.recentdetail.RecentDetailFragment;
 import com.pham.duycuong.soundcloud.screen.recentplaylist.RecentPlaylistFragment;
 import com.pham.duycuong.soundcloud.screen.recenttrack.RecentTrackFragment;
@@ -92,7 +90,8 @@ public class PlayActivity extends AppCompatActivity
         mActionBar.setDisplayHomeAsUpEnabled(true);
 
         final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_left);
-        upArrow.setColorFilter(getResources().getColor(R.color.color_black), PorterDuff.Mode.SRC_ATOP);
+        upArrow.setColorFilter(getResources().getColor(R.color.color_black),
+                PorterDuff.Mode.SRC_ATOP);
         mActionBar.setHomeAsUpIndicator(upArrow);
 
         mButtonPlay = findViewById(R.id.button_play);
@@ -167,7 +166,7 @@ public class PlayActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.item_search_main:
+            case R.id.item_search:
                 startActivity(new Intent(this, SearchActivity.class));
                 break;
             default:
@@ -238,10 +237,8 @@ public class PlayActivity extends AppCompatActivity
     public void updateProgress(long progress, long duration) {
         long temp = duration + 1;
         mSeekBarMain.setProgress((int) (progress * PROGRESS_MAX / temp));
-        mTextViewProgress.setText(UsefulFunc
-                .convertProgressToTime(progress / ONE_SECOND));
-        mTextViewDuration.setText(UsefulFunc
-                .convertProgressToTime(duration / ONE_SECOND));
+        mTextViewProgress.setText(UsefulFunc.convertProgressToTime(progress / ONE_SECOND));
+        mTextViewDuration.setText(UsefulFunc.convertProgressToTime(duration / ONE_SECOND));
     }
 
     @Override
@@ -249,8 +246,8 @@ public class PlayActivity extends AppCompatActivity
         if (track == null) {
             return;
         }
-        mActionBar.setTitle(Html.fromHtml(
-                "<font color='#000000'>" + track.getTitle() + " </font>"));
+        mActionBar.setTitle(
+                Html.fromHtml("<font color='#000000'>" + track.getTitle() + " </font>"));
     }
 
     @Override
@@ -280,13 +277,8 @@ public class PlayActivity extends AppCompatActivity
     }
 
     @Override
-    public void updateFirstTime(int loopMode,
-                                int shuffleMode,
-                                long progress,
-                                long duration,
-                                @Nullable Track track,
-                                ArrayList<Track> tracks,
-                                int playState) {
+    public void updateFirstTime(int loopMode, int shuffleMode, long progress, long duration,
+            @Nullable Track track, ArrayList<Track> tracks, int playState) {
         updateLoopMode(loopMode);
         updateShuffleMode(shuffleMode);
         updateProgress(progress, duration);

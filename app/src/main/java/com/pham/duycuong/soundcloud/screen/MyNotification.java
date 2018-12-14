@@ -47,8 +47,8 @@ public class MyNotification {
 
         RemoteViews remoteView = new RemoteViews(mContext.getPackageName(),
                 R.layout.notification_controller);
-//        remoteView.setTextViewText(R.id.text_notification_track, track.getTitle());
-//        remoteView.setTextViewText(R.id.text_notification_user, track.getUserName());
+        remoteView.setTextViewText(R.id.text_notification_track, track.getTitle());
+        remoteView.setTextViewText(R.id.text_notification_user, track.getUserName());
 
         if (playState == PlayState.PLAYING) {
             remoteView.setImageViewResource(R.id.image_notification_play,

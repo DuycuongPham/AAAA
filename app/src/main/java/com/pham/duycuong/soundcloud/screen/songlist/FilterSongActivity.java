@@ -1,5 +1,6 @@
 package com.pham.duycuong.soundcloud.screen.songlist;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -13,6 +14,9 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,7 +75,7 @@ public class FilterSongActivity extends BaseActivity
                 TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
                         TracksLocalDataSource.getInstance(new AppExecutors(),
                                 MyDBHelper.getInstance(this)));
-        mPresenter = new SongListPresenter(repository);
+        mPresenter = new SongListPresenter(getApplicationContext(), repository);
         mPresenter.setView(this);
         mPresenter.getSong();
         initBaseView();
@@ -82,12 +86,21 @@ public class FilterSongActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.item_search).getActionView();
-        searchView.setIconifiedByDefault(false);
+        searchView.setIconifiedByDefault(true);
+        searchView.setFocusable(true);
+        searchView.setIconified(false);
+        searchView.setQueryHint(Html.fromHtml("<font color = #838383>"
+                + getResources().getString(R.string.title_seach_hint)
+                + "</font>"));
+        searchView.requestFocus();
         int id = searchView.getContext()
                 .getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
         TextView textView = (TextView) searchView.findViewById(id);
         textView.setTextColor(getResources().getColor(R.color.color_black));
+        int magId = getResources().getIdentifier("android:id/search_mag_icon", null, null);
+        ImageView magImage = (ImageView) searchView.findViewById(magId);
+        magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -106,14 +119,10 @@ public class FilterSongActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_search:
-
-                break;
-            default:
-                break;
+        int id = item.getItemId();
+        if (id == R.id.item_search) {
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

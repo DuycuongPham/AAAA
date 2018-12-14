@@ -9,7 +9,6 @@ import com.pham.duycuong.soundcloud.util.AppExecutors;
 
 import java.util.List;
 
-
 public class PlaylistLocalDataSource implements PlaylistDataSource {
 
     private static PlaylistLocalDataSource sInstance;
@@ -17,13 +16,13 @@ public class PlaylistLocalDataSource implements PlaylistDataSource {
     private AppExecutors mAppExecutors;
 
     private PlaylistLocalDataSource(@NonNull AppExecutors appExecutors,
-                                  @NonNull PlaylistDao playlistDao) {
+            @NonNull PlaylistDao playlistDao) {
         mPlaylistDao = playlistDao;
         mAppExecutors = appExecutors;
     }
 
     public static PlaylistLocalDataSource getInstance(@NonNull AppExecutors appExecutors,
-                                                    PlaylistDao playlistDao) {
+            PlaylistDao playlistDao) {
         if (sInstance == null) {
             synchronized (PlaylistLocalDataSource.class) {
                 if (sInstance == null) {
@@ -51,12 +50,11 @@ public class PlaylistLocalDataSource implements PlaylistDataSource {
     }
 
     @Override
-    public void savePlaylist(@NonNull final Playlist playlist,
-                             final PlaylistCallback callback) {
+    public void savePlaylist(@NonNull final Playlist playlist, final PlaylistCallback callback) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if(mPlaylistDao.insertPlaylist(playlist)) {
+                if (mPlaylistDao.insertPlaylist(playlist)) {
                     callback.onSuccess();
                 } else {
                     callback.onFail();
@@ -67,8 +65,24 @@ public class PlaylistLocalDataSource implements PlaylistDataSource {
     }
 
     @Override
+    public void savePlaylist(@NonNull final Playlist playlist,
+            @NonNull final CreateDialogCallback callback) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (mPlaylistDao.insertPlaylist(playlist)) {
+                    callback.onSuccess(playlist);
+                } else {
+                    callback.onFail();
+                }
+            }
+        };
+        mAppExecutors.diskIO().execute(runnable);
+    }
+
+    @Override
     public void deleteList(@NonNull final Playlist playlist,
-                           @NonNull final PlaylistCallback callback) {
+            @NonNull final PlaylistCallback callback) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -81,11 +95,11 @@ public class PlaylistLocalDataSource implements PlaylistDataSource {
 
     @Override
     public void addTrackToPlaylist(@NonNull final Track track, @NonNull final Playlist playlist,
-                                   @NonNull final PlaylistCallback callback) {
+            @NonNull final PlaylistCallback callback) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if(mPlaylistDao.addTrackToPlaylist(track, playlist)) {
+                if (mPlaylistDao.addTrackToPlaylist(track, playlist)) {
                     callback.onSuccess();
                 } else {
                     callback.onFail();
@@ -96,8 +110,8 @@ public class PlaylistLocalDataSource implements PlaylistDataSource {
     }
 
     @Override
-    public void removeTrackFromPlaylist(@NonNull final Track track, @NonNull final Playlist playlist,
-                                        @NonNull final PlaylistCallback callback) {
+    public void removeTrackFromPlaylist(@NonNull final Track track,
+            @NonNull final Playlist playlist, @NonNull final PlaylistCallback callback) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -109,7 +123,8 @@ public class PlaylistLocalDataSource implements PlaylistDataSource {
     }
 
     @Override
-    public void updatePlaylist(@NonNull final Playlist playlist, @NonNull final PlaylistCallback callback) {
+    public void updatePlaylist(@NonNull final Playlist playlist,
+            @NonNull final PlaylistCallback callback) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

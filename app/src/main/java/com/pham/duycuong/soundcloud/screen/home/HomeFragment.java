@@ -1,15 +1,18 @@
 package com.pham.duycuong.soundcloud.screen.home;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.pham.duycuong.soundcloud.R;
@@ -61,6 +64,10 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
 
     private TextView mTextViewRetry;
     private RelativeLayout mLayoutInternet;
+    private Handler mHandler;
+    private ProgressBar mProgressBar;
+
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -79,7 +86,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
         mTextViewRetry = view.findViewById(R.id.textRetry);
         mLayoutInternet = view.findViewById(R.id.layoutInternet);
         mRecyclerViewCategories = view.findViewById(R.id.recycler_view);
-
+        mProgressBar = view.findViewById(R.id.progressBar);
         RecyclerView.LayoutManager layoutManager =
                 new GridLayoutManager(getActivity(), GRID_COLUMN_NUMB);
         EqualSpacingItemDecoration itemDecoration = new EqualSpacingItemDecoration(GRID_SPACE);
@@ -90,6 +97,8 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
         mRecyclerViewCategories.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), mRecyclerViewCategories, this));
 
+        mHandler = new Handler();
+
         mHomePresenter = new HomePresenter(TracksRepository
                 .getInstance(TracksRemoteDataSource.getInstance(),
                         TracksLocalDataSource.getInstance(new AppExecutors(),
@@ -98,6 +107,7 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
         mHomePresenter.setView(this);
         if(isInternetAvailable()){
             mHomePresenter.getCategories();
+            mLayoutInternet.setVisibility(View.INVISIBLE);
         }
         else{
             mLayoutInternet.setVisibility(View.VISIBLE);
@@ -108,6 +118,18 @@ public class HomeFragment extends Fragment implements HomeContract.View, Recycle
             public void onClick(View view) {
                 if(isInternetAvailable()){
                     mHomePresenter.getCategories();
+                    mLayoutInternet.setVisibility(View.GONE);
+                }
+                else{
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    mLayoutInternet.setVisibility(View.GONE);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBar.setVisibility(View.GONE);
+                            mLayoutInternet.setVisibility(View.VISIBLE);
+                        }
+                    }, 500);
                 }
             }
         });

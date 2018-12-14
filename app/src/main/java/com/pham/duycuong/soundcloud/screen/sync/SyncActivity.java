@@ -1,11 +1,13 @@
 package com.pham.duycuong.soundcloud.screen.sync;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -22,7 +24,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,9 +57,17 @@ import static com.pham.duycuong.soundcloud.util.Constant.FOLDER_NAME;
 
 public class SyncActivity extends AppCompatActivity {
 
+    private static final int SIGIN_REQUEST_CODE = 103;
+    private static final int DOWNLOADING = 1;
+    private static final int UPLOADING = 2;
+
+    private static final String PROCESS = "PROCESS";
+    private static final String POSITION_FILE_IN_LIST = "POSITION_FILE_IN_LIST";
+    private static final String TRACK_LIST = "TRACK_LIST";
+
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
-    FirebaseUser user;
+    private FirebaseUser user;
     private RecyclerView mRecyclerViewSongLocal;
     private DatabaseReference mRefSong;
     private String mUid;
@@ -68,13 +77,15 @@ public class SyncActivity extends AppCompatActivity {
     private List<Track> mTracksNotOnLocal;
     private List<Track> mTracksNotOnCloud;
     private List<Track> mTracksUpload;
+    private List<Track> mTracksUpload2;
     private List<Track> mTracksDownload;
+    private List<Track> mTracksDownload2;
 
     private List<Long> mIdTracksLocal;
     private List<Long> mIdTracksCloud;
-    // the order of track when sync
-    private int mOrder = 0;
-    private int nOrderDownload = 0;
+    // the order of track when checkSongOnCloudAndLocal
+    private int mOrderUpload = 0;
+    private int mOrderDownload = 0;
 
     private ScrollView mScrollView;
     private LinearLayout mProgressLayout;
@@ -90,10 +101,6 @@ public class SyncActivity extends AppCompatActivity {
     private CheckBox mCheckBoxTracksNotOnCloud;
     private boolean mIsChooseAllTrackNotOnCloud = false;
 
-//    private LinearLayout mLayoutProgress;
-//    private TextView mTextProgressUpload;
-//    private TextView mTextProgressDownload;
-
     private ChooseTrackAdapter mAdapterTracksNotOnCloud;
     private ChooseTrackAdapter mAdapterTracksNotOnLocal;
 
@@ -107,6 +114,10 @@ public class SyncActivity extends AppCompatActivity {
     private int mNumberCloud = 0;
 
     private StorageReference mStorageRef;
+    private TracksRepository mTrackRepository;
+    private int mProcess = 0;
+    private int mPositionUploading;
+    private int mPositionDownloading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,8 +140,8 @@ public class SyncActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 user = firebaseAuth.getCurrentUser();
                 if (user == null) {
-                    startActivity(new Intent(SyncActivity.this, SigninActivity.class));
-                    finish();
+                    Intent intent = new Intent(SyncActivity.this, SigninActivity.class);
+                    startActivityForResult(intent, SIGIN_REQUEST_CODE);
                 } else {
                     init();
                 }
@@ -148,9 +159,6 @@ public class SyncActivity extends AppCompatActivity {
         mScrollView = findViewById(R.id.layoutSync);
         mScrollView.setVisibility(View.GONE);
         mProgressLayout = findViewById(R.id.progressLayout);
-//        mLayoutProgress = findViewById(R.id.layoutProgress);
-//        mTextProgressUpload = findViewById(R.id.textProcessUpload);
-//        mTextProgressDownload = findViewById(R.id.textProcessDownload);
 
         mRcvTracksNotOnLocal = findViewById(R.id.recyclerTracksNotOnLocal);
         mRcvTracksNotOnCloud = findViewById(R.id.recyclerTracksNotOnCloud);
@@ -182,9 +190,22 @@ public class SyncActivity extends AppCompatActivity {
         mRcvTracksNotOnCloud.setAdapter(mAdapterTracksNotOnCloud);
         mRcvTracksNotOnLocal.setAdapter(mAdapterTracksNotOnLocal);
 
+        mTrackRepository = TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
+                TracksLocalDataSource.getInstance(new AppExecutors(),
+                        MyDBHelper.getInstance(this)));
+
         initOnClickListenerAdapter();
-        getTrackOnCloud();
-        getTrackOnLocal();
+        checkSongOnCloudAndLocal();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SIGIN_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                init();
+            }
+        }
     }
 
     @Override
@@ -192,9 +213,7 @@ public class SyncActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
-    // [END on_start_add_listener]
 
-    // [START on_stop_remove_listener]
     @Override
     public void onStop() {
         super.onStop();
@@ -213,6 +232,115 @@ public class SyncActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sync, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sync:
+                if (mNumberCloud == 0 && mNumberLocal == 0) {
+                    Toast.makeText(this, getString(R.string.msg_not_choose_song),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    new AlertDialog.Builder(this).setMessage(
+                            getString(R.string.msg_sync_download_song)
+                                    + " "
+                                    + mNumberLocal
+                                    + " "
+                                    + getString(R.string.title_song)
+                                    + "\n"
+                                    + getString(R.string.msg_sync_upload_song)
+                                    + " "
+                                    + mNumberCloud
+                                    + " "
+                                    + getString(R.string.title_song))
+
+                            .setPositiveButton(R.string.title_sync2,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            setLayoutSyncing(true);
+                                            download();
+                                            upload();
+                                        }
+                                    })
+                            .setNegativeButton(R.string.title_cancel,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                            .create()
+                            .show();
+                }
+
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        bundle.putInt(PROCESS, -1);
+        if (mProcess > 0) {
+            if (mProcess == UPLOADING) {
+                bundle.putInt(PROCESS, UPLOADING);
+                bundle.putInt(POSITION_FILE_IN_LIST, mPositionUploading);
+                bundle.putParcelableArrayList(TRACK_LIST,
+                        (ArrayList<Track>) mTracksUpload2);
+            } else if (mProcess == DOWNLOADING) {
+                bundle.putInt(PROCESS, DOWNLOADING);
+                bundle.putInt(POSITION_FILE_IN_LIST, mPositionDownloading);
+                bundle.putParcelableArrayList(TRACK_LIST,
+                        (ArrayList<Track>) mTracksDownload2);
+            }
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle bundle) {
+        super.onRestoreInstanceState(bundle);
+        mProcess = bundle.getInt(PROCESS);
+        if (mProcess > 0) {
+            if (mProcess == DOWNLOADING) {
+                int position = bundle.getInt(POSITION_FILE_IN_LIST);
+                ArrayList<Track> trackList = bundle.getParcelableArrayList(TRACK_LIST);
+                mTracksDownload2 = trackList;
+                StorageReference storageRef = FirebaseStorage.getInstance()
+                        .getReference()
+                        .child(mUid)
+                        .child(Constant.FIREBASE_SONG);
+                for (int i = position; i < trackList.size(); i++) {
+                    mPositionDownloading = i;
+                    final Track track = trackList.get(i);
+                    mOrderDownload = i + 1;
+                    downloadTrackFromFirebase(storageRef, track);
+                }
+            }
+            else if(mProcess == UPLOADING){
+                int position = bundle.getInt(POSITION_FILE_IN_LIST);
+                ArrayList<Track> trackList = bundle.getParcelableArrayList(TRACK_LIST);
+                mTracksDownload2 = trackList;
+                StorageReference storageRef = FirebaseStorage.getInstance()
+                        .getReference()
+                        .child(mUid)
+                        .child(Constant.FIREBASE_SONG);
+                for (int i = position; i < trackList.size(); i++) {
+                    mPositionUploading = i;
+                    final Track track = trackList.get(i);
+                    mOrderUpload = i + 1;
+                    uploadTrackToFirebase(storageRef, track);
+                }
+            }
+        }
     }
 
     private void initOnClickListenerAdapter() {
@@ -247,114 +375,33 @@ public class SyncActivity extends AppCompatActivity {
                 });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_sync, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sync:
-                if (mNumberCloud == 0 && mNumberLocal == 0) {
-                    Toast.makeText(this, getString(R.string.msg_not_choose_song),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    new AlertDialog.Builder(this).setMessage(
-                            getString(R.string.msg_sync_download_song)
-                                    + " "
-                                    + mNumberLocal
-                                    + " "
-                                    + getString(R.string.title_song)
-                                    + "\n"
-                                    + getString(R.string.msg_sync_upload_song)
-                                    + " "
-                                    + mNumberCloud
-                                    + " "
-                                    + getString(R.string.title_song))
-
-                            .setPositiveButton(R.string.title_sync2,
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            mSyncingLayout.setVisibility(View.VISIBLE);
-                                            download();
-                                            upload();
-                                        }
-                                    })
-                            .setNegativeButton(R.string.title_cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.dismiss();
-                                        }
-                                    })
-                            .create()
-                            .show();
-                }
-
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // If there's an upload in progress, save the reference so you can query it later
-        if (mStorageRef != null) {
-            outState.putString("reference", mStorageRef.toString());
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        // If there was an upload in progress, get its reference and create a new StorageReference
-        final String stringRef = savedInstanceState.getString("reference");
-        if (stringRef == null) {
-            return;
-        }
-        mStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(stringRef);
-        Log.d("xxx", "onRestoreInstanceState: " + mStorageRef.getPath());
-
-        // Find all UploadTasks under this StorageReference (in this example, there should be one)
-        List<UploadTask> tasks = mStorageRef.getActiveUploadTasks();
-        if (tasks.size() > 0) {
-            // Get the task monitoring the upload
-            UploadTask task = tasks.get(0);
-
-            // Add new listeners to the task using an Activity scope
-            task.addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot state) {
-                    // Success!
-                    // ...
-                }
-            });
-        }
+    private void checkSongOnCloudAndLocal() {
+        mLoadTrackFromCloudDone = false;
+        mLoadTrackFromLocalDone = false;
+        getTrackCloud();
+        getTrackLocal();
     }
 
     public void onClickCheckboxTracksNotOnCloud(View view) {
         if (mCheckBoxTracksNotOnCloud.isChecked()) {
             mRcvTracksNotOnCloud.setVisibility(View.GONE);
-            mIsChooseAllTrackNotOnLocal = true;
+            mIsChooseAllTrackNotOnCloud = true;
+            mNumberCloud = mTracksNotOnCloud.size();
+
         } else {
             mRcvTracksNotOnCloud.setVisibility(View.VISIBLE);
-            mIsChooseAllTrackNotOnLocal = false;
+            mIsChooseAllTrackNotOnCloud = false;
         }
     }
 
     public void onClickCheckboxTracksNotOnLocal(View view) {
         if (mCheckBoxTracksNotOnLocal.isChecked()) {
             mRcvTracksNotOnLocal.setVisibility(View.GONE);
-            mIsChooseAllTrackNotOnCloud = true;
+            mIsChooseAllTrackNotOnLocal = true;
+            mNumberLocal = mTracksNotOnLocal.size();
         } else {
             mRcvTracksNotOnLocal.setVisibility(View.VISIBLE);
-            mIsChooseAllTrackNotOnCloud = false;
+            mIsChooseAllTrackNotOnLocal = false;
         }
     }
 
@@ -362,17 +409,22 @@ public class SyncActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef =
                 storage.getReference().child(mUid).child(Constant.FIREBASE_SONG);
+        mProcess = UPLOADING;
         if (mIsChooseAllTrackNotOnCloud) {
             List<Track> trackList = mAdapterTracksNotOnCloud.getTracks();
+            mTracksUpload2 = trackList;
             for (int i = 0; i < trackList.size(); i++) {
+                mPositionUploading = i;
                 final Track track = trackList.get(i);
-                mOrder = i + 1;
+                mOrderUpload = i + 1;
                 uploadTrackToFirebase(storageRef, track);
             }
         } else {
+            mTracksUpload2 = mTracksUpload;
             for (int i = 0; i < mTracksUpload.size(); i++) {
+                mPositionUploading = i;
                 final Track track = mTracksUpload.get(i);
-                mOrder = i + 1;
+                mOrderUpload = i + 1;
                 uploadTrackToFirebase(storageRef, track);
             }
         }
@@ -392,10 +444,17 @@ public class SyncActivity extends AppCompatActivity {
                 Log.d("syncXXX", "onSuccess: " + track.getLocalPath());
                 mRefSong.child(String.valueOf(track.getId())).setValue(track);
 
-                if (mOrder == mTracksUpload.size()) {
-//                    mLayoutProgress.setVisibility(View.GONE);
-                    mOrder = 0;
-                    checkSongToSync();
+                if (mOrderUpload == mTracksUpload2.size()) {
+                    mOrderUpload = 0;
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBroadCast();
+                            finish();
+                        }
+                    }, 25000);
+
                 }
             }
         });
@@ -404,7 +463,7 @@ public class SyncActivity extends AppCompatActivity {
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double progress = (100.0 * taskSnapshot.getBytesTransferred())
                         / taskSnapshot.getTotalByteCount();
-//                showProgressUpload(mOrder, mTracksUpload.size(), progress);
+                //                showProgressUpload(mOrder, mTracksUpload.size(), progress);
             }
         }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -420,27 +479,32 @@ public class SyncActivity extends AppCompatActivity {
                 storage.getReference().child(mUid).child(Constant.FIREBASE_SONG);
         mStorageRef = storageRef;
         FileDownloadTask downloadTask = null;
+        mProcess = DOWNLOADING;
         if (mIsChooseAllTrackNotOnLocal) {
             List<Track> trackList = mAdapterTracksNotOnLocal.getTracks();
+            mTracksDownload2 = trackList;
             for (int i = 0; i < trackList.size(); i++) {
+                mPositionDownloading = i;
                 final Track track = trackList.get(i);
-                mOrder = i+1;
+                mOrderDownload = i + 1;
                 downloadTrackFromFirebase(storageRef, track);
             }
         } else {
+            mTracksDownload2 = mTracksDownload;
             for (int i = 0; i < mTracksDownload.size(); i++) {
+                mPositionDownloading = i;
                 Track track = mTracksDownload.get(i);
-                mOrder = i+1;
+                mOrderDownload = i + 1;
                 downloadTrackFromFirebase(storageRef, track);
             }
         }
     }
 
     private void downloadTrackFromFirebase(StorageReference storageRef, final Track track) {
-        String fileName = new StringBuilder().append(track.getId())
+        final String fileName = new StringBuilder().append(track.getId())
                 .append(Constant.SoundCloud.EXTENSION)
                 .toString();
-        File file = new File(getRootCachePath() + FOLDER_NAME + "/" + fileName);
+        final File file = new File(getRootCachePath() + FOLDER_NAME + "/" + fileName);
         FileDownloadTask downloadTask =
                 storageRef.child(String.valueOf(track.getId())).getFile(file);
 
@@ -456,7 +520,9 @@ public class SyncActivity extends AppCompatActivity {
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                DataSnapshot dataSnapshot1 = dataSnapshot;
+                                Track track = dataSnapshot.getValue(Track.class);
+                                track.setLocalPath(file.getAbsolutePath());
+                                mTrackRepository.saveTrack(track, null);
                             }
 
                             @Override
@@ -465,13 +531,17 @@ public class SyncActivity extends AppCompatActivity {
                             }
                         });
 
-                if (mOrder == mTracksDownload.size() && mTracksUpload.size() == 0) {
-//                    mLayoutProgress.setVisibility(View.GONE);
-                    mOrder = 0;
-                    checkSongToSync();
-
+                if (mOrderDownload == mTracksDownload2.size() && mTracksUpload.size() == 0) {
+                    mOrderDownload = 0;
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendBroadCast();
+                            finish();
+                        }
+                    }, 25000);
                 }
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -486,7 +556,7 @@ public class SyncActivity extends AppCompatActivity {
             public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 double progress = (100.0 * taskSnapshot.getBytesTransferred())
                         / taskSnapshot.getTotalByteCount();
-//                showProgressDownload(mOrder, mTracksDownload.size(), progress);
+                //                showProgressDownload(mOrder, mTracksDownload.size(), progress);
             }
         }).addOnPausedListener(new OnPausedListener<FileDownloadTask.TaskSnapshot>() {
             @Override
@@ -496,7 +566,7 @@ public class SyncActivity extends AppCompatActivity {
         });
     }
 
-    private void getTrackOnLocal() {
+    private void getTrackLocal() {
         TracksRepository tracksRepository =
                 TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
                         TracksLocalDataSource.getInstance(new AppExecutors(),
@@ -510,7 +580,8 @@ public class SyncActivity extends AppCompatActivity {
                     mIdTracksLocal.add(mTrackListLocal.get(i).getId());
                 }
                 mLoadTrackFromLocalDone = true;
-                checkSongToSync();
+                checkSongSync();
+                Log.d("lllk", "onTracksLoaded: ");
             }
 
             @Override
@@ -520,7 +591,7 @@ public class SyncActivity extends AppCompatActivity {
         });
     }
 
-    private void getTrackOnCloud() {
+    private void getTrackCloud() {
         mRefSong = FirebaseDatabase.getInstance()
                 .getReference()
                 .child(mUid)
@@ -528,6 +599,7 @@ public class SyncActivity extends AppCompatActivity {
         mRefSong.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("lllk", "onDataChange: ");
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Track track = data.getValue(Track.class);
                     if (track != null) {
@@ -536,7 +608,7 @@ public class SyncActivity extends AppCompatActivity {
                     }
                 }
                 mLoadTrackFromCloudDone = true;
-                checkSongToSync();
+                checkSongSync();
             }
 
             @Override
@@ -546,9 +618,29 @@ public class SyncActivity extends AppCompatActivity {
         });
     }
 
-    private void checkSongToSync() {
-        mSyncingLayout.setVisibility(View.VISIBLE);
+    private void checkSongSync() {
         if (mLoadTrackFromCloudDone && mLoadTrackFromLocalDone) {
+            mTracksNotOnCloud.clear();
+            mTracksNotOnLocal.clear();
+//            int size = mTracksNotOnLocal.size();
+//            if(size>0){
+//                for(int i = 0; i< mTracksNotOnLocal.size();i++){
+//                    mTracksNotOnLocal.remove(0);
+//
+//                }
+//                mAdapterTracksNotOnLocal.notifyItemRangeRemoved(0, size);
+//            }
+//            int size2 = mTracksNotOnCloud.size();
+//            if(size2>0){
+//                for(int i = 0; i< mTracksNotOnCloud.size();i++){
+//                    mTracksNotOnCloud.remove(0);
+//
+//                }
+//                mAdapterTracksNotOnCloud.notifyItemRangeRemoved(0, size);
+//            }
+            mAdapterTracksNotOnLocal.notifyDataSetChanged();
+            mAdapterTracksNotOnCloud.notifyDataSetChanged();
+
             for (Track track : mTrackListLocal) {
                 if (!mIdTracksCloud.contains(track.getId())) {
                     mTracksNotOnCloud.add(track);
@@ -577,7 +669,6 @@ public class SyncActivity extends AppCompatActivity {
             } else {
                 mLayoutNotOnLocal.setVisibility(View.VISIBLE);
             }
-
         }
     }
 
@@ -617,22 +708,6 @@ public class SyncActivity extends AppCompatActivity {
         }
     }
 
-//    private void showProgressUpload(int orderUpload, int numberUpload, double progress) {
-//        mLayoutProgress.setVisibility(View.VISIBLE);
-//        mTextProgressUpload.setText(
-//                orderUpload + "/" + numberUpload + ": " + String.format("%.0f", progress) + "%");
-//    }
-//
-//    private void showProgressDownload(int orderDownload, int numberDownload, double progress) {
-//        mLayoutProgress.setVisibility(View.VISIBLE);
-//        mTextProgressDownload.setText(orderDownload
-//                + "/"
-//                + numberDownload
-//                + ": "
-//                + String.format("%.0f", progress)
-//                + "%");
-//    }
-
     public String getRootCachePath() {
         String mCacheRootPath = null;
         if (Environment.getExternalStorageDirectory().exists()) {
@@ -648,5 +723,26 @@ public class SyncActivity extends AppCompatActivity {
             mCacheRootPath = getCacheDir().getPath();
         }
         return mCacheRootPath;
+    }
+
+    public void onClickTextSongUploaded(View view) {
+        startActivity(new Intent(SyncActivity.this, SongUploadedActivity.class));
+    }
+
+    private void setLayoutSyncing(boolean visible) {
+        if (visible) {
+            mSyncingLayout.setVisibility(View.VISIBLE);
+            mScrollView.setVisibility(View.INVISIBLE);
+            mSyncingLayout.bringToFront();
+        } else {
+            mSyncingLayout.setVisibility(View.GONE);
+            mScrollView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void sendBroadCast(){
+        Intent intent = new Intent();
+        intent.setAction(Constant.RECREATE_SYNC__ACTIVITY);
+        sendBroadcast(intent);
     }
 }

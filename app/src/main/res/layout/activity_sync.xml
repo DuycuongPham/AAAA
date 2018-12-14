@@ -61,6 +61,18 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
+            <TextView
+                android:id="@+id/textSongUploaded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_song_uploaded"
+                android:padding="@dimen/dp_10"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/color_white"
+                android:background="@color/color_black"
+                android:onClick="onClickTextSongUploaded"
+                android:layout_marginTop="@dimen/dp_5"
+                />
             <LinearLayout
                 android:id="@+id/layoutNotOnLocal"
                 android:layout_width="match_parent"
@@ -70,13 +82,14 @@
                 <TextView
                     android:id="@+id/textSong"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/main_title_sync"
+                    android:layout_height="wrap_content"
                     android:text="@string/title_song_not_on_device"
                     android:textSize="@dimen/sp_20"
-                    android:textColor="@color/color_white"
-                    android:background="@color/color_black"
                     android:onClick="onClickTextNotOnLocal"
                     android:gravity="center_vertical"
+                    android:padding="@dimen/dp_10"
+                    android:textColor="@color/color_white"
+                    android:background="@color/color_black"
                     />
 
                 <LinearLayout
@@ -85,6 +98,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:visibility="visible"
+                    android:gravity="center"
                     >
                     <TextView
                         android:layout_width="wrap_content"
@@ -122,20 +136,21 @@
                 >
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/main_title_sync"
+                    android:layout_height="wrap_content"
                     android:text="@string/title_song_not_on_cloud"
                     android:textSize="@dimen/sp_20"
-                    android:textColor="@color/color_white"
-                    android:background="@color/color_black"
                     android:onClick="onClickTextNotOnCloud"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/dp_10"
+                    android:textColor="@color/color_white"
+                    android:background="@color/color_black"/>
                 <LinearLayout
                     android:id="@+id/layoutChooseAllTracksNotOnCloud"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:gravity="center"
                     >
                     <TextView

@@ -1,16 +1,21 @@
 package com.pham.duycuong.soundcloud.screen.songlist;
 
+import android.content.Context;
 import com.pham.duycuong.soundcloud.data.model.Track;
 import com.pham.duycuong.soundcloud.data.source.TracksDataSource;
 import com.pham.duycuong.soundcloud.data.source.TracksRepository;
 import com.pham.duycuong.soundcloud.screen.playlist.PlaylistContract;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class SongListPresenter implements SongListContract.Presenter {
     private SongListContract.View mView;
     private TracksRepository mTracksRepository;
+    private Context mContext;
 
-    public SongListPresenter(TracksRepository repository){
+    public SongListPresenter(Context context, TracksRepository repository){
+        mContext = context;
         mTracksRepository = repository;
     }
     @Override
@@ -41,6 +46,18 @@ public class SongListPresenter implements SongListContract.Presenter {
                 mView.onDeleteSongFaile();
             }
         });
+        File file = new File(track.getLocalPath());
+        file.delete();
+        if (file.exists()) {
+            try {
+                file.getCanonicalFile().delete();
+            } catch (IOException e) {
+
+            }
+            if (file.exists()) {
+                mContext.deleteFile(file.getName());
+            }
+        }
     }
 
     @Override

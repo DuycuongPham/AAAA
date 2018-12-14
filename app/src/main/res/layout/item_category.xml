@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_category_image_height"
         android:layout_marginTop="@dimen/controller_padding_bottom"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_playlist" />
 
     <TextView

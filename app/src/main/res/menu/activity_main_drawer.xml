@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item
+            android:icon="@drawable/ic_info"
+            android:id="@+id/info"
+            android:title="@string/title_info" />
+
+        <item
+            android:icon="@drawable/ic_facebook"
+            android:id="@+id/feedback"
+            android:title="@string/title_fanpage" />
+
+        <item
+            android:icon="@drawable/policy"
+            android:id="@+id/policy"
+            android:title="@string/title_policy" />
+
+</menu>

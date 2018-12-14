@@ -9,7 +9,7 @@
     >
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
     <LinearLayout
@@ -26,6 +26,7 @@
             android:padding="@dimen/dp_10"
             >
             <ImageView
+                android:id="@+id/imageUser"
                 android:layout_width="@dimen/icon_size_img"
                 android:layout_height="@dimen/icon_size_img"
                 android:src="@drawable/ic_user"
@@ -42,6 +43,34 @@
                 android:layout_gravity="center"
                 />
         </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layoutFavorite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            >
+            <ImageView
+                android:layout_width="@dimen/icon_size_img"
+                android:layout_height="@dimen/icon_size_img"
+                android:src="@drawable/ic_favorite"
+                android:layout_marginRight="@dimen/dp_20"
+
+                />
+            <TextView
+                android:id="@+id/textFavorite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_favorite"
+                android:textSize="@dimen/sp_20"
+                android:textColor="@color/color_black"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
 
 
         <LinearLayout
@@ -120,7 +149,7 @@
             android:id="@+id/textHistory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_20"
             android:layout_marginLeft="@dimen/dp_16"
             android:text="@string/title_track_history"
             android:textSize="@dimen/dp_20"

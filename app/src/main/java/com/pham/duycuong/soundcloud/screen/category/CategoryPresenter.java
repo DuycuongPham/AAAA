@@ -61,4 +61,9 @@ public class CategoryPresenter implements CategoryContract.Presenter{
     public void download(Track track) {
 
     }
+
+    @Override
+    public void saveTrackHistory(Track track) {
+        mTracksDataSource.saveTrackHistory(track);
+    }
 }

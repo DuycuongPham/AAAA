@@ -7,6 +7,9 @@ public class MySharedPreferences {
 
     private static final String PREF_NAME = "MUSIC";
     public static final String USER_NAME = "USER_NAME";
+    public static final String USER_EMAIL = "USER_EMAIL";
+    public static final String LOGGED_IN = "LOGGED_IN";
+    public static final String AVARTAR_USER_LINK = "AVATAR_USER_LINK";
     private SharedPreferences mSharedPreferences;
 
     public MySharedPreferences(Context context) {

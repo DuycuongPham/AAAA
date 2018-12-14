@@ -56,6 +56,11 @@ public class PlayListDetailPresenter implements PlayListDetailConstract.Presente
     }
 
     @Override
+    public void saveTrackHisoty(Track track) {
+        mTracksRepository.saveTrackHistory(track);
+    }
+
+    @Override
     public void removeTrackFromPlaylist(Track track, Playlist playlist,
             PlaylistDataSource.PlaylistCallback callback) {
         mPlaylistRepository.removeTrackFromPlaylist(track, playlist, callback);

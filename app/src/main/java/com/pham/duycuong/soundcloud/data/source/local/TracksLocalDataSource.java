@@ -101,7 +101,9 @@ public class TracksLocalDataSource implements TracksDataSource {
             @Override
             public void run() {
                 mTracksDao.insertTrack(track);
-                callback.onSaveTrackFinished();
+                if(callback!=null){
+                    callback.onSaveTrackFinished();
+                }
             }
         };
         mAppExecutors.diskIO().execute(runnable);
@@ -113,7 +115,7 @@ public class TracksLocalDataSource implements TracksDataSource {
             @Override
             public void run() {
                 List<Track> tracks = mTracksDao.getTracks(true);
-                if (tracks.isEmpty()) {
+                if (tracks.isEmpty() && callback!=null) {
                     callback.onDataNotAvailable();
                 } else {
                     callback.onTracksLoaded(tracks);

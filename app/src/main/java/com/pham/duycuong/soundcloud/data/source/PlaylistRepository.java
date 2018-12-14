@@ -36,6 +36,11 @@ public class PlaylistRepository implements PlaylistDataSource {
     }
 
     @Override
+    public void savePlaylist(@NonNull Playlist playlist, @NonNull CreateDialogCallback callback) {
+        mLocalDataSource.savePlaylist(playlist, callback);
+    }
+
+    @Override
     public void deleteList(@NonNull Playlist playlist, @NonNull PlaylistCallback callback) {
         mLocalDataSource.deleteList(playlist, callback);
     }

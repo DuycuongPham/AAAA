@@ -69,10 +69,7 @@ public class MyDownloadManager implements DownloadObservable {
     }
 
     public void deleteTrack(Track track) {
-        //        String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         File f = new File(track.getLocalPath());
-        //                .append(track.getLocalPath()).append(SEPARATE)
-        //                .append(track.getId()).append(Constant.SoundCloud.EXTENSION).toString());
         f.delete();
 
         mTracksRepository.deleteTrack(track.getId(), new TracksDataSource.TrackCallback() {

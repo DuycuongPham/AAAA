@@ -7,10 +7,10 @@ import com.pham.duycuong.soundcloud.data.source.Genre;
 
 public class Category implements Parcelable {
 
-    public static String ALL_MUSIC = "All Music";
-    public static String AMBIENT = "Ambient";
-    public static String CLASSICAL = "Classical";
-    public static String COUNTRY = "Country";
+    public static String ALL_MUSIC = "Tất cả";
+    public static String AMBIENT = "Nhạc nền";
+    public static String CLASSICAL = "Cổ điển";
+    public static String COUNTRY = "Đồng quê";
     public static String DANCE_EDM = "Dance & EDM";
     public static String DANCEHALL = "Dancehall";
     public static String DEEP_HOUSE = "Deep House";

@@ -17,5 +17,6 @@ public interface CategoryContract {
         void getTracks(int page);
         void setCategory(@Genre Category category);
         void download(Track track);
+        void saveTrackHistory(Track track);
     }
 }

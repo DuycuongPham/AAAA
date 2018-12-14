@@ -1,5 +1,6 @@
 package com.pham.duycuong.soundcloud.screen.sync;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -14,6 +15,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,7 +28,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.pham.duycuong.soundcloud.R;
+import com.pham.duycuong.soundcloud.data.model.Track;
+import com.pham.duycuong.soundcloud.screen.main.MainActivity;
+import com.pham.duycuong.soundcloud.util.Constant;
 import com.pham.duycuong.soundcloud.util.MySharedPreferences;
 
 public class SigninActivity extends AppCompatActivity implements View.OnClickListener {
@@ -34,10 +41,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
-
     private GoogleSignInClient mGoogleSignInClient;
     @VisibleForTesting
     public ProgressDialog mProgressDialog;
@@ -128,8 +132,29 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
 
                             MySharedPreferences sharedPreferences = new MySharedPreferences(SigninActivity.this);
                             sharedPreferences.put(MySharedPreferences.USER_NAME, user.getDisplayName());
+                            sharedPreferences.put(MySharedPreferences.USER_EMAIL, user.getEmail());
+                            sharedPreferences.put(MySharedPreferences.AVARTAR_USER_LINK, user.getPhotoUrl());
+                            sharedPreferences.put(MySharedPreferences.LOGGED_IN, true);
 
-                            startActivity(new Intent(SigninActivity.this, SyncActivity.class));
+                            Intent intent = getIntent();
+                            Bundle bundle = intent.getBundleExtra(Constant.BUNDLE);
+                            if(bundle!=null){
+                                Track track = bundle.getParcelable(Constant.TRACK);
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                        .getReference()
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(Constant.FIREBASE_FAVORITE);
+                                databaseReference.child(String.valueOf(track.getId())).setValue(track);
+                                Toast.makeText(SigninActivity.this,
+                                        getString(R.string.msg_add_song_to_favorite_success, track.getTitle()),
+                                        Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else{
+                                setResult(Activity.RESULT_OK);
+                                finish();
+                            }
+
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -166,20 +191,6 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
         });
     }
 
-    private void revokeAccess() {
-        // Firebase sign out
-        mAuth.signOut();
-
-        // Google revoke access
-        mGoogleSignInClient.revokeAccess()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
-                });
-    }
-
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
@@ -198,6 +209,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        startActivity(new Intent(SigninActivity.this, MainActivity.class));
         finish();
     }
 

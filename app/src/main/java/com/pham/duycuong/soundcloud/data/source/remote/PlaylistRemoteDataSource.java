@@ -37,6 +37,11 @@ public class PlaylistRemoteDataSource implements PlaylistDataSource {
     }
 
     @Override
+    public void savePlaylist(@NonNull Playlist playlist, @NonNull CreateDialogCallback callback) {
+
+    }
+
+    @Override
     public void deleteList(@NonNull Playlist playlist, @NonNull PlaylistCallback callback) {
 
     }

@@ -45,20 +45,8 @@ public class FilterTrackAdapter
         mPlayState = PlayState.PAUSED;
     }
 
-    public FilterTrackAdapter(boolean isDownloading, boolean isSimple) {
-        mTrackList = new ArrayList<>();
-        this.mIsDownloading = isDownloading;
-        this.mIsSimple = isSimple;
-        mPlayState = PlayState.PAUSED;
-    }
-
     public List<Track> getTrackList() {
         return mTrackList;
-    }
-
-    public void setTrackList(List<Track> trackList) {
-        mTrackList = trackList;
-        notifyDataSetChanged();
     }
 
     public  void setTrackListFilter(List<Track> tracks){
@@ -70,19 +58,6 @@ public class FilterTrackAdapter
     public void setTrack(Track track) {
         mTrack = track;
         notifyDataSetChanged();
-    }
-
-    public void appendItem(Track track) {
-        if (mTrackList != null) {
-            mTrackList.add(track);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void moveTrack(int oldPos, int newPos){
-        Track item= mTrackList.get(oldPos);
-        mTrackList.remove(oldPos);
-        mTrackList.add(newPos, item);
     }
 
     public void deleteTrack(int pos){
@@ -200,10 +175,6 @@ public class FilterTrackAdapter
             if (track == null) {
                 return;
             }
-            if(track.isDownloadable()){
-                itemView.setBackgroundColor(R.color.color_gray);
-
-            }
             mTextViewTrack.setText(track.getTitle());
             mTextViewArtist.setText(track.getUserName());
             mImageViewAction.setOnClickListener(new View.OnClickListener() {
@@ -241,20 +212,24 @@ public class FilterTrackAdapter
             mImageViewTrack.setBackgroundResource(android.R.color.transparent);
             mImageViewTrack.setImageResource(android.R.color.transparent);
 
-            if (mTrack != null && mTrack.getId() == track.getId()) {
-                mImageViewTrack.setBackgroundResource(R.drawable.playing_animation);
-                AnimationDrawable animation = (AnimationDrawable) mImageViewTrack.getBackground();
-                if (mPlayState == PlayState.PLAYING) {
-                    animation.start();
-                } else {
-                    animation.stop();
-                }
-            } else {
-                Picasso.get().load(track.getArtworkUrl())
-                        .error(R.drawable.ic_music)
-                        .placeholder(R.drawable.ic_music)
-                        .into(mImageViewTrack);
-            }
+//            if (mTrack != null && mTrack.getId() == track.getId()) {
+//                mImageViewTrack.setBackgroundResource(R.drawable.playing_animation);
+//                AnimationDrawable animation = (AnimationDrawable) mImageViewTrack.getBackground();
+//                if (mPlayState == PlayState.PLAYING) {
+//                    animation.start();
+//                } else {
+//                    animation.stop();
+//                }
+//            } else {
+//                Picasso.get().load(track.getArtworkUrl())
+//                        .error(R.drawable.ic_music)
+//                        .placeholder(R.drawable.ic_music)
+//                        .into(mImageViewTrack);
+//            }
+            Picasso.get().load(track.getArtworkUrl())
+                    .error(R.drawable.ic_music)
+                    .placeholder(R.drawable.ic_music)
+                    .into(mImageViewTrack);
         }
     }
 }

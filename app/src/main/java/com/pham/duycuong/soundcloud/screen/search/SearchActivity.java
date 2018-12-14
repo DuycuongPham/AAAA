@@ -1,12 +1,20 @@
 package com.pham.duycuong.soundcloud.screen.search;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.Menu;
 import android.widget.EditText;
 
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import com.pham.duycuong.soundcloud.R;
@@ -32,8 +40,7 @@ public class SearchActivity extends BaseActivity
     private SearchContract.Presenter mPresenter;
     private RecyclerView mRecyclerSearchResult;
     private TrackAdapter mTrackAdapter;
-    private TextView mTextViewNoInternet;
-    private TextView mTextViewRetry;
+    private RelativeLayout mLayoutInternet;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,12 +48,17 @@ public class SearchActivity extends BaseActivity
         setContentView(R.layout.activity_search);
         initBaseView();
         initMusicService();
-        if(isNetworkAvailable()){
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        }
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_left);
+        upArrow.setColorFilter(getResources().getColor(R.color.color_black),
+                PorterDuff.Mode.SRC_ATOP);
+        actionBar.setHomeAsUpIndicator(upArrow);
         mRecyclerSearchResult = findViewById(R.id.recycler_search_result);
-        TracksDataSource dataSource = TracksRepository
-                .getInstance(TracksRemoteDataSource.getInstance(),
+        mLayoutInternet = findViewById(R.id.layoutInternet);
+        TracksDataSource dataSource =
+                TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
                         TracksLocalDataSource.getInstance(new AppExecutors(),
                                 MyDBHelper.getInstance(this)));
         mPresenter = new SearchPresenter(dataSource);
@@ -69,12 +81,18 @@ public class SearchActivity extends BaseActivity
         getMenuInflater().inflate(R.menu.menu_search, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.item_search).getActionView();
         searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint(Html.fromHtml("<font color = #838383>"
+                + getResources().getString(R.string.title_seach_hint)
+                + "</font>"));
         searchView.requestFocus();
         int id = searchView.getContext()
                 .getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
         TextView textView = (TextView) searchView.findViewById(id);
         textView.setTextColor(getResources().getColor(R.color.color_black));
+        int magId = getResources().getIdentifier("android:id/search_mag_icon", null, null);
+        ImageView magImage = (ImageView) searchView.findViewById(magId);
+        magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -112,7 +130,7 @@ public class SearchActivity extends BaseActivity
     @Override
     public void onItemOption(Track track) {
         DetailBottomSheetFragment fragment =
-                DetailBottomSheetFragment.newInstance(track, false, false);
+                DetailBottomSheetFragment.newInstance(track, false, false, true, true);
         fragment.setDetailBottomSheetListener(this);
         fragment.show(getSupportFragmentManager(), fragment.getTag());
     }

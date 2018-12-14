@@ -12,6 +12,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
+
+            <ImageView
+                android:id="@+id/image_download"
+                android:layout_width="@dimen/download_item_image_height"
+                android:layout_height="@dimen/download_item_image_height"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_track_detail" />
+
+            <TextView
+                android:id="@+id/text_download"
+                style="@style/DownloadText"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/download_item_image_height"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/title_download"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_download"
+                app:layout_constraintTop_toBottomOf="@+id/image_track_detail" />
+
             <ImageView
                 android:id="@+id/image_delete"
                 android:layout_width="@dimen/download_item_image_height"
@@ -39,53 +63,32 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_download" />
 
             <ImageView
-                android:id="@+id/image_download"
+                android:id="@+id/image_ring"
                 android:layout_width="@dimen/download_item_image_height"
                 android:layout_height="@dimen/download_item_image_height"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
+                android:src="@drawable/ic_ring"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_play" />
+                app:layout_constraintTop_toBottomOf="@+id/image_delete"
+                android:visibility="gone"/>
 
             <TextView
-                android:id="@+id/text_download"
+                android:id="@+id/text_set_ringtone"
                 style="@style/DownloadText"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/download_item_image_height"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="@string/title_download"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/image_download"
-                app:layout_constraintTop_toBottomOf="@+id/text_play" />
-
-            <ImageView
-                android:id="@+id/image_play"
-                android:layout_width="@dimen/download_item_image_height"
-                android:layout_height="@dimen/download_item_image_height"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:src="@drawable/play_gray"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_track_detail" />
-
-            <TextView
-                android:id="@+id/text_play"
-                style="@style/DownloadText"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/download_item_image_height"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="24dp"
-                android:text="@string/title_play"
+                android:gravity="center_vertical"
+                android:text="@string/title_set_ringtone"
                 android:textColor="@color/color_black"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/image_play"
-                app:layout_constraintTop_toBottomOf="@+id/text_user" />
+                app:layout_constraintStart_toEndOf="@+id/image_delete"
+                app:layout_constraintTop_toBottomOf="@+id/text_delete"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/image_track_detail"
@@ -127,15 +130,40 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/image_playlist"
+                android:id="@+id/image_favorite"
+                android:layout_width="@dimen/download_item_image_height"
+                android:layout_height="@dimen/download_item_image_height"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
+                android:src="@drawable/ic_favorite_2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_ring" />
+
+            <TextView
+                android:id="@+id/text_add_favorite"
+                style="@style/DownloadText"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/download_item_image_height"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/title_add_to_favorite"
+                android:textColor="@color/color_black"
+                app:layout_constraintStart_toEndOf="@+id/image_favorite"
+                app:layout_constraintTop_toBottomOf="@+id/text_set_ringtone" />
+
+            <ImageView
+                android:id="@+id/image_playlist"
+                android:layout_width="@dimen/download_item_image_height"
+                android:layout_height="@dimen/download_item_image_height"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:src="@drawable/ic_playlist_add"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_delete" />
+                app:layout_constraintTop_toBottomOf="@+id/image_favorite"
+                android:visibility="visible"/>
 
             <TextView
                 android:id="@+id/text_add_playlist"
@@ -148,36 +176,49 @@
                 android:text="@string/title_add_to_playlist"
                 android:textColor="@color/color_black"
                 app:layout_constraintStart_toEndOf="@+id/image_playlist"
-                app:layout_constraintTop_toBottomOf="@+id/text_delete" />
+                app:layout_constraintTop_toBottomOf="@+id/text_add_favorite"
+                android:visibility="visible"/>
+
+            <ImageView
+                android:id="@+id/image_create_playlist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginTop="@dimen/dp_16"
+                android:src="@drawable/ic_add_circle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_playlist"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/text_create_playlist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_16"
                 style="@style/DownloadText"
                 android:text="@string/title_create_playlist"
                 android:textColor="@color/color_black"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/image_create_playlist"
                 app:layout_constraintTop_toBottomOf="@+id/text_add_playlist"
+                android:visibility="gone"
                 />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_playlist"
-                android:layout_width="@dimen/recycler_detail_height"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="@dimen/dp_60"
-                android:layout_marginStart="@dimen/dp_60"
+                android:layout_marginLeft="@dimen/dp_30"
+                android:layout_marginStart="@dimen/dp_30"
                 android:layout_marginTop="8dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.613"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_create_playlist"
-                android:visibility="gone"
                 />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

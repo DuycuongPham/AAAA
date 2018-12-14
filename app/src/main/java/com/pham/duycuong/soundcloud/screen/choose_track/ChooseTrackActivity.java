@@ -119,13 +119,13 @@ public class ChooseTrackActivity extends AppCompatActivity
 
     @Override
     public void onSaveFailedPlaylist() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(ChooseTrackActivity.this, getString(R.string.msg_failed_save), Toast.LENGTH_SHORT).show();
-            }
-        };
-        mHandler.post(runnable);
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                Toast.makeText(ChooseTrackActivity.this, getString(R.string.msg_failed_save), Toast.LENGTH_SHORT).show();
+//            }
+//        };
+//        mHandler.post(runnable);
 
     }
 

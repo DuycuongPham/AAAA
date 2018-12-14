@@ -1,7 +1,10 @@
 package com.pham.duycuong.soundcloud.screen.songlist;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -30,7 +33,10 @@ import com.pham.duycuong.soundcloud.data.source.local.TracksLocalDataSource;
 import com.pham.duycuong.soundcloud.data.source.remote.TracksRemoteDataSource;
 import com.pham.duycuong.soundcloud.screen.BaseActivity;
 import com.pham.duycuong.soundcloud.util.AppExecutors;
+import com.pham.duycuong.soundcloud.util.Constant;
 import java.util.List;
+
+import static com.pham.duycuong.soundcloud.util.Constant.RESETPADDING_BROADCAST;
 
 public class SongListActivity extends BaseActivity
         implements SongListContract.View, DetailBottomSheetListener, TrackClickListener {
@@ -42,6 +48,15 @@ public class SongListActivity extends BaseActivity
     private TextView mTextViewNotSongAvailable;
     private SongListPresenter mPresenter;
     private Handler mHandler;
+
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction()== Constant.RESETPADDING_BROADCAST){
+                mRecyclerView.setPadding(0,0,0, 90);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +78,9 @@ public class SongListActivity extends BaseActivity
 
         mHandler = new Handler();
 
+        IntentFilter filter = new IntentFilter(RESETPADDING_BROADCAST);
+        registerReceiver(mBroadcastReceiver, filter);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mTrackAdapter = new TrackAdapter();
@@ -73,7 +91,7 @@ public class SongListActivity extends BaseActivity
                 TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
                         TracksLocalDataSource.getInstance(new AppExecutors(),
                                 MyDBHelper.getInstance(this)));
-        mPresenter = new SongListPresenter(repository);
+        mPresenter = new SongListPresenter(getApplicationContext(), repository);
         mPresenter.setView(this);
         mPresenter.getSong();
         initBaseView();
@@ -82,7 +100,7 @@ public class SongListActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -111,6 +129,7 @@ public class SongListActivity extends BaseActivity
     public void onItemOption(Track track) {
         mBottomSheetFragment = DetailBottomSheetFragment.newInstance(track);
         mBottomSheetFragment.setDetailBottomSheetListener(this);
+        mBottomSheetFragment.setShowAddPlaylist(true);
         mBottomSheetFragment.show(getSupportFragmentManager(), mBottomSheetFragment.getTag());
     }
 
@@ -198,8 +217,15 @@ public class SongListActivity extends BaseActivity
     @Override
     public void onPlay(Track track) {
         if (mMusicService != null) {
-            mMusicService.handleNewTrack(track);
-            mPresenter.saveTrackHistory(track);
+            List<Track> trackList = mTrackAdapter.getTrackList();
+            int positon = trackList.indexOf(track);
+            mMusicService.handleNewTrack(trackList, positon, false);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver);
     }
 }

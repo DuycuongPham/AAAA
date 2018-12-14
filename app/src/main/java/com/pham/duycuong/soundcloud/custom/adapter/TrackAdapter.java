@@ -78,7 +78,6 @@ public class TrackAdapter
 
     public void deleteTrack(int pos){
         mTrackList.remove(pos);
-//        notifyItemRemoved(pos);
         notifyDataSetChanged();
     }
 
@@ -159,10 +158,6 @@ public class TrackAdapter
             if (track == null) {
                 return;
             }
-            if(track.isDownloadable()){
-                itemView.setBackgroundColor(R.color.color_gray);
-
-            }
             mTextViewTrack.setText(track.getTitle());
             mTextViewArtist.setText(track.getUserName());
             mImageViewAction.setOnClickListener(new View.OnClickListener() {
@@ -200,20 +195,24 @@ public class TrackAdapter
             mImageViewTrack.setBackgroundResource(android.R.color.transparent);
             mImageViewTrack.setImageResource(android.R.color.transparent);
 
-            if (mTrack != null && mTrack.getId() == track.getId()) {
-                mImageViewTrack.setBackgroundResource(R.drawable.playing_animation);
-                AnimationDrawable animation = (AnimationDrawable) mImageViewTrack.getBackground();
-                if (mPlayState == PlayState.PLAYING) {
-                    animation.start();
-                } else {
-                    animation.stop();
-                }
-            } else {
-                Picasso.get().load(track.getArtworkUrl())
-                        .error(R.drawable.ic_music)
-                        .placeholder(R.drawable.ic_music)
-                        .into(mImageViewTrack);
-            }
+//            if (mTrack != null && mTrack.getId() == track.getId()) {
+//                mImageViewTrack.setBackgroundResource(R.drawable.playing_animation);
+//                AnimationDrawable animation = (AnimationDrawable) mImageViewTrack.getBackground();
+//                if (mPlayState == PlayState.PLAYING) {
+//                   // animation.start();
+//                } else {
+//                    //animation.stop();
+//                }
+//            } else {
+//                Picasso.get().load(track.getArtworkUrl())
+//                        .error(R.drawable.ic_music)
+//                        .placeholder(R.drawable.ic_music)
+//                        .into(mImageViewTrack);
+//            }
+            Picasso.get().load(track.getArtworkUrl())
+                    .error(R.drawable.ic_music)
+                    .placeholder(R.drawable.ic_music)
+                    .into(mImageViewTrack);
         }
     }
     public void setNotAction(){

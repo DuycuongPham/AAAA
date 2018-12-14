@@ -20,24 +20,26 @@ import com.pham.duycuong.soundcloud.util.Constant;
 public class CreatePlaylistDialog extends Dialog implements View.OnClickListener  {
 
     private Context mContext;
-    private EditText mEditName;
+    private EditText mEditTextName;
     private TextView mTextViewCreate;
     private TextView mTextViewCancel;
     private PlaylistRepository mPlaylistRepository;
-    private PlaylistDataSource.PlaylistCallback mPlaylistCallback;
+    private PlaylistDataSource.CreateDialogCallback mPlaylistCallback;
+    private boolean mGoToSongList;
 
     public CreatePlaylistDialog(@NonNull Context context,
                                 PlaylistRepository playlistRepository,
-                                PlaylistDataSource.PlaylistCallback callback) {
+                                PlaylistDataSource.CreateDialogCallback callback) {
         super(context);
         mContext = context;
         setContentView(R.layout.dialog_create_playlist);
         setCancelable(false);
         setTitle(R.string.title_create_playlist);
         mPlaylistCallback = callback;
-        mEditName = findViewById(R.id.editText);
+        mEditTextName = findViewById(R.id.editText);
         mTextViewCreate = findViewById(R.id.textViewCreate);
         mTextViewCancel = findViewById(R.id.textViewCancel);
+        mEditTextName.requestFocus();
         mPlaylistRepository = playlistRepository;
         mTextViewCreate.setOnClickListener(this);
         mTextViewCancel.setOnClickListener(this);
@@ -50,7 +52,7 @@ public class CreatePlaylistDialog extends Dialog implements View.OnClickListener
                 dismiss();
                 break;
             case R.id.textViewCreate:
-                String name = mEditName.getText().toString();
+                String name = mEditTextName.getText().toString();
                 if (name.isEmpty()) {
                     Toast.makeText(getContext(),
                             getContext().getResources().getText(R.string.mgs_empty_name),
@@ -60,11 +62,6 @@ public class CreatePlaylistDialog extends Dialog implements View.OnClickListener
                 Playlist playlist = new Playlist(System.currentTimeMillis(), name);
                 mPlaylistRepository.savePlaylist(playlist,
                         mPlaylistCallback);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(Constant.PLAY_LIST, playlist);
-                Intent intent = new Intent(mContext, ChooseTrackActivity.class);
-                intent.putExtra(Constant.BUNDLE, bundle);
-                mContext.startActivity(intent);
                 dismiss();
                 break;
             default:

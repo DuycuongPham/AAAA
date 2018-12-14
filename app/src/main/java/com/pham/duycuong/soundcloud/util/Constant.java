@@ -4,9 +4,13 @@ public class Constant {
 
     public static final String PLAY_LIST = "PLAY_LIST";
     public static final String BUNDLE = "BUNDLE";
+    public static final String TRACK = "TRACK";
     public static final String FIREBASE_SONG = "song";
-    public static final String FIREBASE_PLAYLIST = "playlist";
+    public static final String FIREBASE_FAVORITE = "favorite";
     public static final String FOLDER_NAME = "/MUSIC_CUONG";
+
+    public static final String RESETPADDING_BROADCAST = "RESETPADDING_BROADCAST";
+    public static final String RECREATE_SYNC__ACTIVITY = "RECREATE_SYNC__ACTIVITY";
 
     private Constant() {
     }
@@ -60,24 +64,25 @@ public class Constant {
         public static final String TABLE_TRACK = "track";
         public static final String TABLE_TRACK_HISTORY= "track_history";
         public static final String COLUMN_ID = "_id";
-        public static final String COLUMN_KIND = "track_kind";
-        public static final String COLUMN_CREATED_AT = "track_created_at";
-        public static final String COLUMN_DURATION = "track_duration";
-        public static final String COLUMN_STATE = "track_state";
-        public static final String COLUMN_TAG_LIST = "track_tag_list";
-        public static final String COLUMN_DOWNLOADABLE = "track_downloadable";
-        public static final String COLUMN_GENRE = "track_genre";
-        public static final String COLUMN_TITLE = "track_title";
-        public static final String COLUMN_DESCRIPTION = "track_description";
-        public static final String COLUMN_LABEL_NAME = "track_label_name";
-        public static final String COLUMN_STREAM_URL = "track_stream_url";
-        public static final String COLUMN_USER_ID = "track_user_id";
-        public static final String COLUMN_USER_NAME = "track_user_name";
-        public static final String COLUMN_AVATAR_URL = "track_avatar_url";
-        public static final String COLUMN_DOWNLOAD_URL = "track_download_url";
-        public static final String COLUMN_ARTWORK_URL = "track_artwork_url";
-        public static final String COLUMN_DOWNLOADED = "track_downloaded";
-        public static final String COLUMN_LOCAL_PATH = "track_local_path";
+        public static final String COLUMN_KIND = "kind";
+        public static final String COLUMN_CREATED_AT = "created_at";
+        public static final String COLUMN_DURATION = "duration";
+        public static final String COLUMN_STATE = "state";
+        public static final String COLUMN_TAG_LIST = "tag_list";
+        public static final String COLUMN_DOWNLOADABLE = "downloadable";
+        public static final String COLUMN_GENRE = "genre";
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_DESCRIPTION = "description";
+        public static final String COLUMN_LABEL_NAME = "label_name";
+        public static final String COLUMN_STREAM_URL = "stream_url";
+        public static final String COLUMN_USER_ID = "user_id";
+        public static final String COLUMN_USER_NAME = "user_name";
+        public static final String COLUMN_AVATAR_URL = "avatar_url";
+        public static final String COLUMN_DOWNLOAD_URL = "download_url";
+        public static final String COLUMN_ARTWORK_URL = "artwork_url";
+        public static final String COLUMN_DOWNLOADED = "downloaded";
+        public static final String COLUMN_LOCAL_PATH = "local_path";
+        public static final String COLUMN_TIMESTAMP = "time_stamp";
     }
 
     public class PlaylistEntry {
@@ -86,7 +91,7 @@ public class Constant {
         }
 
         public static final String TABLE_NAME = "playlist";
-        public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_ID = "id";
         public static final String COLUMN_NAME = "playlist_name";
     }
 
@@ -98,11 +103,6 @@ public class Constant {
         public static final String TABLE_NAME = "track_playlist";
         public static final String COLUMN_ID_TRACK = "track_id";
         public static final String COLUMN_ID_PLAYLIST = "playlist_id";
-    }
-
-    public class TrackHistoryEntry {
-        public static final String TABLE_NAME = "track_history";
-        public static final String COLUMN_ID_TRACK = "track_id";
     }
 
     public class SharedConstant {

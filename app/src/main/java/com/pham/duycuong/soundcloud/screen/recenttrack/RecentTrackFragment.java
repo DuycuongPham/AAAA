@@ -42,9 +42,8 @@ public class RecentTrackFragment extends BaseFragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_track, container, false);
     }
 
@@ -65,16 +64,12 @@ public class RecentTrackFragment extends BaseFragment
 
     public boolean isPermissionGranted() {
         return ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED;
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults
-    ) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
         if (isPermissionGranted()) {
             mMyDownloadManager.download(mTrack);
         }
@@ -136,11 +131,12 @@ public class RecentTrackFragment extends BaseFragment
     @Override
     public void updateTrack(@Nullable Track track) {
         mTrack = track;
-        Transformation transformation = new RoundedTransformationBuilder()
-                .oval(true)
-                .build();
-        Picasso.get().load(track.getArtworkUrl()).fit()
-                .transform(transformation).centerInside()
+        Transformation transformation = new RoundedTransformationBuilder().oval(true).build();
+        Picasso.get()
+                .load(track.getArtworkUrl())
+                .fit()
+                .transform(transformation)
+                .centerInside()
                 .placeholder(R.drawable.music_icon_origin)
                 .error(R.drawable.music_icon_origin)
                 .into(mImageTrack);
@@ -158,13 +154,8 @@ public class RecentTrackFragment extends BaseFragment
     }
 
     @Override
-    public void updateFirstTime(int loopMode,
-                                int shuffleMode,
-                                long progress,
-                                long duration,
-                                @Nullable Track track,
-                                ArrayList<Track> tracks,
-                                int playState) {
+    public void updateFirstTime(int loopMode, int shuffleMode, long progress, long duration,
+            @Nullable Track track, ArrayList<Track> tracks, int playState) {
         updateTrack(track);
         updateState(playState);
     }
@@ -206,8 +197,7 @@ public class RecentTrackFragment extends BaseFragment
                 if (isPermissionGranted()) {
                     mMyDownloadManager.download(mTrack);
                 } else {
-                    requestPermissions(
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    requestPermissions(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
                             REQUEST_PERMISSION);
                 }
                 break;

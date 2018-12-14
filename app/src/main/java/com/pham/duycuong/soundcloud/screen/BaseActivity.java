@@ -144,6 +144,9 @@ public abstract class BaseActivity extends AppCompatActivity
             mRelativeSubController.setVisibility(View.GONE);
         } else {
             mRelativeSubController.setVisibility(View.VISIBLE);
+            Intent intent = new Intent();
+            intent.setAction(Constant.RESETPADDING_BROADCAST);
+            sendBroadcast(intent);
         }
     }
 

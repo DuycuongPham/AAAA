@@ -111,7 +111,9 @@ public class MyDBHelper extends SQLiteOpenHelper implements PlaylistDao, TracksD
             + Constant.TrackEntry.COLUMN_LOCAL_PATH
             + " TEXT,"
             + Constant.TrackEntry.COLUMN_ARTWORK_URL
-            + " TEXT)";
+            + " TEXT,"
+            + Constant.TrackEntry.COLUMN_TIMESTAMP
+            + " DATETIME DEFAULT CURRENT_TIMESTAMP)";
 
     private static final String SQL_DELETE_TRACK_ENTRIES =
             "DROP TABLE IF EXISTS " + Constant.TrackEntry.TABLE_TRACK;
@@ -193,11 +195,14 @@ public class MyDBHelper extends SQLiteOpenHelper implements PlaylistDao, TracksD
         }
         return handleTracksCursor(getReadableDatabase().query(Constant.TrackEntry.TABLE_TRACK, null,
                 new StringBuilder(Constant.TrackEntry.COLUMN_DOWNLOADED).append(EQUAL_Q).toString(),
-                new String[] { String.valueOf(TRUE_VALUE) }, null, null, null));
+                new String[] { String.valueOf(TRUE_VALUE) }, null, null,
+                Constant.TrackEntry.COLUMN_TITLE + " ASC"));
     }
 
     @Override
     public List<Track> getTracks(@NonNull Playlist playlist) {
+        //"SELECT * FROM track, track_playlist WHERE track._id = track_playlist.track_id AND
+        // playlist_id = playlist.id";
         String q = new StringBuilder(SELECT_ALL).append(Constant.TrackEntry.TABLE_TRACK)
                 .append(COMMA)
                 .append(Constant.TrackPlaylistEntry.TABLE_NAME)
@@ -221,7 +226,7 @@ public class MyDBHelper extends SQLiteOpenHelper implements PlaylistDao, TracksD
     public List<Track> getTrackHistory() {
         return handleTracksCursor(
                 getReadableDatabase().query(Constant.TrackEntry.TABLE_TRACK_HISTORY, null, null,
-                        null, null, null, null, "5"));
+                        null, null, null, Constant.TrackEntry.COLUMN_TIMESTAMP + " DESC", "5"));
     }
 
     @Override

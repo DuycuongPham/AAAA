@@ -1,8 +1,11 @@
 package com.pham.duycuong.soundcloud.screen.playlistdetail;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -19,6 +22,8 @@ import android.widget.Toast;
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackAdapter;
 import com.pham.duycuong.soundcloud.custom.adapter.TrackClickListener;
+import com.pham.duycuong.soundcloud.custom.dialog.DetailBottomSheetFragment;
+import com.pham.duycuong.soundcloud.custom.dialog.DetailBottomSheetListener;
 import com.pham.duycuong.soundcloud.data.model.Playlist;
 import com.pham.duycuong.soundcloud.data.model.Track;
 import com.pham.duycuong.soundcloud.data.source.PlaylistDataSource;
@@ -35,8 +40,10 @@ import com.pham.duycuong.soundcloud.util.AppExecutors;
 import com.pham.duycuong.soundcloud.util.Constant;
 import java.util.List;
 
+import static com.pham.duycuong.soundcloud.util.Constant.RESETPADDING_BROADCAST;
+
 public class PlayListDetailActivity extends BaseActivity
-        implements PlayListDetailConstract.View, TrackClickListener {
+        implements PlayListDetailConstract.View, TrackClickListener, DetailBottomSheetListener {
 
     private static final String ARGUMENT_PLAYLIST = "ARGUMENT_PLAYLIST";
 
@@ -47,6 +54,7 @@ public class PlayListDetailActivity extends BaseActivity
     private Playlist mPlaylist;
     private TextView mTextView;
     private List<Track> mTrackList;
+    private RecyclerView mRecyclerView;
 
     private boolean mResave = false;
 
@@ -57,6 +65,15 @@ public class PlayListDetailActivity extends BaseActivity
         intent.putExtras(bundle);
         activity.startActivity(intent);
     }
+
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction()== Constant.RESETPADDING_BROADCAST){
+                mRecyclerView.setPadding(0,0,0, 90);
+            }
+        }
+    };
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +95,9 @@ public class PlayListDetailActivity extends BaseActivity
 
         mHandler = new Handler();
 
+        IntentFilter filter = new IntentFilter(RESETPADDING_BROADCAST);
+        registerReceiver(mBroadcastReceiver, filter);
+
         TracksRepository mTracksRepository =
                 TracksRepository.getInstance(TracksRemoteDataSource.getInstance(),
                         TracksLocalDataSource.getInstance(new AppExecutors(),
@@ -88,14 +108,14 @@ public class PlayListDetailActivity extends BaseActivity
                         MyDBHelper.getInstance(this)));
 
         mPresenter = new PlayListDetailPresenter(this, mTracksRepository, playlistRepository);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        mTrackAdapter = new TrackAdapter(false, true);
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mTrackAdapter = new TrackAdapter();
         mTrackAdapter.setItemClickListener(this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(mTrackAdapter);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(mTrackAdapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        itemTouchHelper.attachToRecyclerView(mRecyclerView);
         initBaseView();
         initMusicService();
     }
@@ -134,44 +154,20 @@ public class PlayListDetailActivity extends BaseActivity
     @Override
     public void onItemClicked(int position) {
         if (mMusicService != null) {
+            Track track = mTrackAdapter.getTrackList().get(position);
             mMusicService.handleNewTrack(mTrackAdapter.getTrackList(), position, false);
+            mPresenter.saveTrackHisoty(track);
         }
     }
 
     @Override
     public void onItemOption(final Track track) {
-        new AlertDialog.Builder(this).setTitle(getString(R.string.title_delete_song))
-                .setMessage(
-                        getString(R.string.msg_delete_song) + " " + track.getTitle() + getString(
-                                R.string.msg_from_playlist) + " " + mPlaylist.getName())
-                .setPositiveButton(getString(R.string.title_delete),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                mPresenter.removeTrackFromPlaylist(track, mPlaylist,
-                                        new PlaylistDataSource.PlaylistCallback() {
-                                            @Override
-                                            public void onSuccess() {
-                                                Toast.makeText(PlayListDetailActivity.this,
-                                                        getString(R.string.msg_delete_success),
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-
-                                            @Override
-                                            public void onFail() {
-                                            }
-                                        });
-                            }
-                        })
-                .setNegativeButton(getString(R.string.title_cancel),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        })
-                .create()
-                .show();
+//
+        DetailBottomSheetFragment fragment =
+                DetailBottomSheetFragment.newInstance(track, false, true, false, true);
+        fragment.setDetailBottomSheetListener(this);
+        fragment.setShowAddPlaylist(true);
+        fragment.show(getSupportFragmentManager(), fragment.getTag());
     }
 
     @Override
@@ -250,6 +246,7 @@ public class PlayListDetailActivity extends BaseActivity
             }
         }
         super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver);
     }
 
     public void onClickFloatButton(View view) {
@@ -258,5 +255,50 @@ public class PlayListDetailActivity extends BaseActivity
         Intent intent = new Intent(this, ChooseTrackActivity.class);
         intent.putExtra(Constant.BUNDLE, bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDelete(final Track track) {
+        new AlertDialog.Builder(this).setTitle(getString(R.string.title_delete_song))
+                        .setMessage(
+                                getString(R.string.msg_delete_song) + " " + track.getTitle() + getString(
+                                        R.string.msg_from_playlist) + " " + mPlaylist.getName())
+                        .setPositiveButton(getString(R.string.title_delete),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        mPresenter.removeTrackFromPlaylist(track, mPlaylist,
+                                                new PlaylistDataSource.PlaylistCallback() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        mHandler.post(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                int index = mTrackAdapter.getTrackList().indexOf(track);
+                                                                mTrackAdapter.deleteTrack(index);
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onFail() {
+                                                    }
+                                                });
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.title_cancel),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                        .create()
+                        .show();
+    }
+
+    @Override
+    public void onPlay(Track track) {
+
     }
 }

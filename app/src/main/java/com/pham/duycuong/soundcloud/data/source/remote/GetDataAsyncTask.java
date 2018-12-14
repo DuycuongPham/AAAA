@@ -2,8 +2,6 @@ package com.pham.duycuong.soundcloud.data.source.remote;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
-
 import com.pham.duycuong.soundcloud.BuildConfig;
 import com.pham.duycuong.soundcloud.data.model.Track;
 import com.pham.duycuong.soundcloud.data.source.Genre;
@@ -103,13 +101,10 @@ public class GetDataAsyncTask extends AsyncTask<String, Void, Void> {
         urlConnection.setRequestMethod("GET");
         urlConnection.setReadTimeout(READ_TIMEOUT);
         urlConnection.setConnectTimeout(CONNECT_TIMEOUT);
-
         urlConnection.setDoOutput(true);
-
         urlConnection.connect();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {

@@ -15,7 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screen.main.MainActivity">
+        <activity
+            android:name=".screen.main.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -27,19 +30,24 @@
 
         <activity
             android:name=".screen.category.CategoryActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".screen.play.PlayActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".screen.download.DownloadActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".screen.playlist.PlaylistActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".screen.search.SearchActivity"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
 
         <receiver android:name=".screen.MyBroadcastReceiver">
             <intent-filter>
@@ -47,9 +55,14 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".screen.playlistdetail.PlayListDetailActivity">
-        </activity>
-        <activity android:name=".screen.songlist.SongListActivity">
+        <activity
+            android:name=".screen.playlistdetail.PlayListDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".screen.songlist.SongListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
@@ -60,13 +73,41 @@
         </activity>
         <activity
             android:name=".screen.choose_track.ChooseTrackActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".screen.sync.SyncActivity">
+        <activity
+            android:name=".screen.sync.SyncActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".screen.sync.SigninActivity">
+        <activity
+            android:name=".screen.sync.SigninActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".screen.songlist.FilterSongActivity">
+        <activity
+            android:name=".screen.songlist.FilterSongActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".screen.favorite.FavoriteActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".screen.sync.UserActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".screen.sync.SongUploadedActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".screen.InfoAppActivity">
+        </activity>
+        <activity android:name=".screen.PolicyActivity">
         </activity>
     </application>
 

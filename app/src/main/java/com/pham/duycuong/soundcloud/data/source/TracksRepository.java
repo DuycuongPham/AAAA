@@ -28,7 +28,8 @@ public class TracksRepository implements TracksDataSource {
 
     @Override
     public void getTracks(@NonNull LoadTracksCallback callback) {
-        mTracksLocalDataSource.getTracks(callback);
+//        mTracksLocalDataSource.getTracks(callback);
+        mTracksLocalDataSource.getDownloadedTracks(callback);
     }
 
     @Override

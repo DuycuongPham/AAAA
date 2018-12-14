@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.pham.duycuong.soundcloud.R;
 import com.pham.duycuong.soundcloud.data.model.Category;
+import com.pham.duycuong.soundcloud.data.source.Genre;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -65,10 +66,58 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
                 return;
             }
             mTextViewCategory.setText(category.getName());
-            Picasso.get().load(category.getImageUrl()).fit().centerCrop()
-                    .error(R.drawable.ic_playlist)
-                    .placeholder(R.drawable.ic_playlist)
-                    .into(mImageCategory);
+
+            switch(category.getGenre()){
+
+                case Genre.ALL_MUSIC:
+                    mImageCategory.setImageResource(R.drawable.img_all_music);
+                    break;
+
+                case Genre.AMBIENT:
+                    mImageCategory.setImageResource(R.drawable.img_ambient);
+                    break;
+
+                case Genre.CLASSICAL:
+                    mImageCategory.setImageResource(R.drawable.img_classical);
+                    break;
+
+                case Genre.COUNTRY:
+                    mImageCategory.setImageResource(R.drawable.country_music);
+                    break;
+
+                case Genre.DANCE_EDM:
+                    mImageCategory.setImageResource(R.drawable.img_edm);
+                    break;
+
+                case Genre.DEEP_HOUSE:
+                    mImageCategory.setImageResource(R.drawable.country_music);
+                    break;
+
+                case Genre.DISCO:
+                    mImageCategory.setImageResource(R.drawable.img_disco);
+                    break;
+
+                case Genre.DRUM_BASS:
+                    mImageCategory.setImageResource(R.drawable.img_drum);
+                    break;
+
+                case Genre.PIANO:
+                    mImageCategory.setImageResource(R.drawable.img_piano);
+                    break;
+
+                case Genre.POP:
+                    mImageCategory.setImageResource(R.drawable.img_pop);
+                    break;
+
+                case Genre.ROCK:
+                    mImageCategory.setImageResource(R.drawable.img_rock);
+                    break;
+
+            }
+//            Picasso.get().load(category.getImageUrl()).fit().centerCrop()
+//                    .error(R.drawable.ic_playlist)
+//                    .placeholder(R.drawable.ic_playlist)
+//                    .into(mImageCategory);
         }
     }
 }
